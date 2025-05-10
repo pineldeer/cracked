@@ -36,17 +36,19 @@ const Container = styled.div`
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #f8f8f8;
+    background-color: rgba(248, 248, 248, 0);
 `
 
 const Header = styled.h1`
+    font-family: 'Noto Sans KR', sans-serif;
     font-size: 2rem;
     text-align: center;
     margin-bottom: 2rem;
-    color: #333;
+    color: #fff;
 `
 
 const StartButton = styled.button`
+    font-family: 'Noto Sans KR', sans-serif;
     padding: 0.75rem 1.5rem;
     font-size: 1.1rem;
     font-weight: bold;

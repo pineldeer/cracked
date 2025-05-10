@@ -20,11 +20,20 @@ export interface rawGraveContent {
     grave_content: string
 }
 
-
-export interface rawChatItem {
+export interface rawSession {
     id: number
     user_id: string
+    color: string
+    x: number
+    y: number
+    size: number
+}
+
+export interface rawChat {
+    id: number
+    user_id: string
+    session_id: number
     question: string
     answer: string
-    order_idx: number
+    order_idx: number      
 }
