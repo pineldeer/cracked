@@ -6,11 +6,12 @@ import { getGraveContent, getPortraitImage, getUserInfo, submitGraveContent } fr
 import { getUserIdImediately, useUserId } from '../../contexts/UserIdContext'
 import { useNavigate } from 'react-router-dom'
 // import { userInfo } from '../../\btypes/type'
-import StarBox from '../../components/StarBox'
 import StarVerse from '../../components/StarVerse'
 import graveIcon from '../../assets/grave-icon.png'
 import graveBack from '../../assets/grave-back.png'
 import { FaArrowAltCircleRight } from "react-icons/fa";
+
+import { ReactTyped } from 'react-typed'
 
 
 const YiSunShinFont = createGlobalStyle`
@@ -107,8 +108,40 @@ export default function Main() {
             <Section>
                 <Portrait src={user.portraitUrl ?? undefined} alt="영정사진" />
                 <MessageSection>
-                    <MainMessage>{user.name}은 {now}에 죽었습니다.</MainMessage>
-                    <SubMessage>묘비문을 작성해 보세요. 아래 묘비를 클릭하세요 ↓</SubMessage>
+                    <MainMessage>
+                        <ReactTyped
+                            strings={[`${user.name}은 ${now}에 죽었습니다.`]}
+                            typeSpeed={60}
+                            startDelay={1000}
+                            // backSpeed={50}
+                            loop={false}
+                            cursorChar=""
+                        />
+                        
+                    </MainMessage>
+                    <SubMessage>
+                        <ReactTyped
+                            strings={[`묘비문을 작성해 보세요. 아래 묘비를 클릭하세요 ↓`]}
+                            typeSpeed={60}
+                            // backSpeed={50}
+                            loop={false}
+                            startDelay={5000}
+                            cursorChar=""
+                        />
+
+                        </SubMessage>
+                    <SubMessage>
+                        <ReactTyped
+                            strings={[`죽음을 기억하세요, 어떤 삶을 사셨나요?`]}
+                            typeSpeed={60}
+                            // backSpeed={50}
+                            loop={false}
+                            startDelay={7000}
+                            // cursorChar=""
+                        />
+
+                        </SubMessage>
+
                 </MessageSection>
                 <ScrollDownIcon>↓</ScrollDownIcon>
             </Section>
