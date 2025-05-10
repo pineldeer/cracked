@@ -9,6 +9,8 @@ class User(Base):
 
     id = Column(String, primary_key=True)
     username = Column(String, nullable=False, unique=True)
+    gender = Column(String)
+    age = Column(Integer)
     image_path = Column(String)
     created_at = Column(DateTime, server_default=func.now())
 

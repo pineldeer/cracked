@@ -2,10 +2,19 @@
 
 from fastapi import FastAPI
 import os
-
+from fastapi.middleware.cors import CORSMiddleware
 from app.router import user, grave, chat
-
 app = FastAPI(debug=True)
+
+# CORS 설정
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 app.include_router(user.router, prefix="/api/users", tags=["User"])
 app.include_router(grave.router, prefix="/api/grave", tags=["Grave"])
