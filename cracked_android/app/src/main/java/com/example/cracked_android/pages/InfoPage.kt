@@ -44,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -67,7 +68,7 @@ fun InfoPage(
     val genderIsMale by viewModel.genderIsMale.collectAsState()
     val age by viewModel.age.collectAsState()
     //val scope = rememberCoroutineScope()
-
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -91,13 +92,14 @@ fun InfoPage(
             viewModel.setAge(it)
         }
         Spacer(modifier = Modifier.height(32.dp))
-        NextButton {
+        NextButton(enabled = imageUri!=null && genderIsMale!=null && username !="") {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val response = viewModel.registerUser(
                         username,
                         if(genderIsMale!!) "male" else "female",
-                        age)
+                        age,
+                        viewModel.uriToFile(context,imageUri!!))
                     withContext(Dispatchers.Main) {
                         viewModel.setUserId(response)
                         onNextClick()

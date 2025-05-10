@@ -2,18 +2,23 @@ package com.example.cracked_android.network
 
 import com.example.cracked_android.network.dto.ChatContent
 import com.example.cracked_android.network.dto.UserInfo
+import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MyRestAPI {
+    @Multipart
     @POST("/api/users/register")
     suspend fun registerUser(
         @Query("name") name: String,
         @Query("gender") gender: String,
         @Query("age") age: Int,
+        @Part image: MultipartBody.Part
     ):String
 
     @GET("/api/users/user_info/{user_id}")

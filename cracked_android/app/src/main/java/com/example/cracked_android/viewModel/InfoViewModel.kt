@@ -1,5 +1,6 @@
 package com.example.cracked_android.viewModel
 
+import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.example.cracked_android.data.PrefRepository
@@ -9,9 +10,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Response
 import retrofit2.http.Path
 import retrofit2.http.Query
+import java.io.File
+import java.io.FileOutputStream
 import javax.inject.Inject
 
 @HiltViewModel
@@ -52,14 +58,28 @@ class InfoViewModel @Inject constructor(
         name: String,
         gender: String,
         age: Int,
+        imageFile: File
     ):String{
-        return api.registerUser( name, gender, age)
+        return api.registerUser( name, gender, age, fileToMultipartPart(imageFile) )
     }
 
     fun setUserId(userId: String) {
         prefRepository.setPref("userId",userId)
     }
 
+    fun uriToFile(context: Context, uri: Uri): File {
+        val inputStream = context.contentResolver.openInputStream(uri)
+        val tempFile = File.createTempFile("upload_", ".jpg", context.cacheDir)
+        tempFile.outputStream().use { output ->
+            inputStream?.copyTo(output)
+        }
+        return tempFile
+    }
+
+    fun fileToMultipartPart(file: File): MultipartBody.Part {
+        val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
+        return MultipartBody.Part.createFormData("images", file.name, requestBody)
+    }
 
 
 }
