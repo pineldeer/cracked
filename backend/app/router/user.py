@@ -34,7 +34,11 @@ def save_image(image: UploadFile, user_id: str):
 class RegisterUserResponse(BaseModel):
     message: str
 
-@router.post("/android/register", response_model=RegisterUserResponse)
+class RegisterUserAndroidResponse(BaseModel):
+    message: str
+    user_id: str
+
+@router.post("/android/register", response_model=RegisterUserAndroidResponse)
 def register_user_android(name: str, gender: str, age: int, image: UploadFile = File(...), db: Session = Depends(get_db)):
     # 이미지 저장
 
