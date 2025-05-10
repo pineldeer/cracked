@@ -47,7 +47,7 @@ private fun MyApp(
     ) {
         NavHost(navController = navController, startDestination = startDestination) {
             composable("StartPage") {
-                StartPage(navController)
+                StartPage{}
             }
 
 
