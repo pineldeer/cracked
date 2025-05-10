@@ -13,9 +13,10 @@ def portrait_image(image_path: str, output_path: str) -> None:
     draw = ImageDraw.Draw(image)
 
     width, height = image.size
+    thickness = width // 8
 
-    draw.line((width // 2, 0, width, width // 2), fill=(0, 0, 0), width=20)
-    draw.line((width // 2, 0, 0, width // 2), fill=(0, 0, 0), width=20)
+    draw.line((width // 2, 0, width, width // 2), fill=(0, 0, 0), width=thickness)
+    draw.line((width // 2, 0, 0, width // 2), fill=(0, 0, 0), width=thickness)
 
     # Optionally: draw a border or cross symbol
     draw.rectangle([(5, 5), (width - 5, height - 5)], outline=(0, 0, 0), width=3)
