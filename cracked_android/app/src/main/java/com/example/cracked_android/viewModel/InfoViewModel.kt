@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.example.cracked_android.data.PrefRepository
 import com.example.cracked_android.network.MyRestAPI
+import com.example.cracked_android.network.dto.RegisterResponse
 import com.example.cracked_android.network.dto.UserInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -61,7 +62,7 @@ class InfoViewModel @Inject constructor(
         gender: String,
         age: Int,
         imageFile: File
-    ):Response<String>{
+    ):Response<RegisterResponse>{
 
         return api.registerUser(
             name.toRequestBody("text/plain".toMediaTypeOrNull()),
