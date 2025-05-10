@@ -1,11 +1,34 @@
-import { Outlet } from 'react-router'
-import TheHeader from '../../components/TheHeader'
+// src/layouts/AppLayout.tsx
+import type { ReactNode } from 'react'
+import styled, { ThemeProvider } from 'styled-components'
+import { theme } from '../../styles/theme'
+import { UserIdProvider } from '../../contexts/UserIdContext'
+import { UserProvider } from '../../contexts/UserContext'
 
-export default function DefaultLayout() {
-  return (
-    <>
-      <TheHeader />
-      <Outlet />
-    </>
-  )
+interface Props {
+    children: ReactNode
 }
+
+export default function AppLayout({ children }: Props) {
+    return (
+        <ThemeProvider theme={theme}>
+            <UserIdProvider>
+                <UserProvider>
+                  <Layout>{children}</Layout> 
+                </UserProvider>
+            </UserIdProvider>
+        </ThemeProvider>
+    )
+}
+
+const Layout = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: ${({ theme }) => theme.colors.background};
+    color: ${({ theme }) => theme.colors.text};
+
+    padding: 0%;
+`

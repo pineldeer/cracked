@@ -15,7 +15,7 @@ export default function Grave() {
         async function fetch() {
             const res = await getGraveContent(id as string)
             if (res) {
-                setEpitaph(res)
+                setEpitaph(res.grave_content)
             } else {
                 console.log("묘비문을 가져오는 데 실패했습니다.")
             }
