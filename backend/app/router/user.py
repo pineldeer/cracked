@@ -45,7 +45,12 @@ def get_user_info(user_id: str):
     cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
     user = cursor.fetchone()
     conn.close()
-    return user[0]
+    return {
+        "user_id": user[0],
+        "username": user[1],
+        "image_path": user[2],
+        "created_at": user[3]
+    }
 
 # 이미지 다운로드
 @router.get("/image/{user_id}")
