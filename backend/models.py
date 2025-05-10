@@ -32,6 +32,7 @@ class Session(Base):
     x = Column(Float)
     y = Column(Float)
     size = Column(Float)
+    summary = Column(String)
 
     created_at = Column(DateTime, server_default=func.now())
 
