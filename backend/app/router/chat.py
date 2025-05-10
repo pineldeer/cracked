@@ -82,7 +82,18 @@ def create_session(user_id: str, color: str, x: float, y: float, size: float, db
 def create_question(user_id: str, session_id: int, db: Session = Depends(get_db)):
     client = OpenAI(api_key=OPENAI_API_KEY)
 
-    messages = [{"role": "system", "content": "You are a helpful assistant that create question for user."}]
+    # messages = [{"role": "system", "content": "You are a helpful assistant that create question for user."}]
+    messages = [{
+        "role": "system",
+        "content": (
+            "당신은 사용자가 자신의 인생을 돌아보고 묘비문을 쓰도록 돕는 대화 코치입니다. "
+            "이전 대화 내용(질문과 답변)을 분석하여, 지금 사용자가 감정적으로 몰입하고 있으나 잠시 멈췄을 때, "
+            "그 감정 흐름을 이어갈 수 있는 질문을 생성하세요. "
+            "질문은 너무 직접적이거나 진단적이지 않아야 하며, 시적이거나 은유적인 언어도 사용할 수 있습니다. "
+            "질문은 짧고 인상 깊어야 하며, 사용자가 자신의 내면에 더 깊이 다가가도록 유도해야 합니다. "
+            "질문은 반드시 한 줄이어야 합니다."
+        )
+    }]
     previous_chats = get_all_chat(user_id, session_id, db)
     for chat in previous_chats:
         messages.append({"role": "assistant", "content": chat["question"]})
