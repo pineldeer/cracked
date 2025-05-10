@@ -92,8 +92,7 @@ export default function StarBox() {
             <Header>솔직한 이야기에 도움이 될 만한 질문을 던져요</Header>
             <SessionContainer>
                 {sessions.map((session) => (
-                    <div key={session}>
-                        <h3>세션 {session}</h3>
+                    <SessionBox key={session}>
                         {chats.filter(chat => chat.id === session).map((chat) => (
                             <div key={chat.id}>
                                 <p>질문: {chat.question}</p>
@@ -106,7 +105,7 @@ export default function StarBox() {
                                 <button onClick={() => handleAnswerSubmit(chat.id, chat.answer)}>답변 제출</button>
                             </div>
                         ))}
-                    </div>
+                    </SessionBox>
                 ))}
             </SessionContainer>
             <CreateButtion onClick={() => handleNewQuestion()} >질문 생성</CreateButtion>
@@ -141,18 +140,18 @@ const SessionContainer = styled.div`
     animation: fadeIn 0.3s ease-in-out;
 `
 
-// const SessionBox = styled.div`
-//     display: flex;
-//     flex-direction: column;
-//     justify-content: center;
-//     align-items: center;
-//     margin: 1rem 0;
-//     padding: 1rem;
-//     border-radius: 10px;
-//     width: 100%;
-//     max-width: 600px;
-//     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-// `
+const SessionBox = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 1rem 0;
+    padding: 1rem;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+`
 
 
 const CreateButtion = styled.button`
