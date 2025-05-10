@@ -1,9 +1,26 @@
 // pages/Home.tsx
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
+import { getUserInfo } from '../../api/api'
+import { useUserId } from '../../contexts/UserIdContext'
 
 export default function Home() {
+    const userId = useUserId()
     const navigate = useNavigate()
+
+    useEffect(() => {
+        async function fetchUserInfo() {
+            if (userId) {
+                const res = await getUserInfo(userId)
+                if (res) {
+                    navigate('/main')
+                }                
+            }
+        }
+
+        fetchUserInfo()
+    }, [userId])
 
     return (
         <Container>

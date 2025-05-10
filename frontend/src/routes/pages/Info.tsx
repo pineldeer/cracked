@@ -6,9 +6,9 @@ import useUser from '../../hooks/useUser'
 
 export default function Info() {
     const { user, setUser } = useUser()
+
     const navigate = useNavigate()
 
-    // ✅ 개발 단계에서는 fake data
     const [photo, setPhoto] = useState<File | null>(null)
     const [name, setName] = useState(user.name ?? '')
     const [gender, setGender] = useState(user.gender ?? '')
@@ -16,19 +16,34 @@ export default function Info() {
 
     const isFormComplete = photo && name && gender && age
 
-    // ✅ 디버깅용 : state 변화 추적
     useEffect(() => {
         console.log("현재 입력 값:", { photo, name, gender, age })
     }, [photo, name, gender, age])
 
     const handleNext = () => {
+        if (!photo) return
+
         setUser({
             ...user,
             name,
             gender,
             age: Number(age),
-            photoUrl: photo ? URL.createObjectURL(photo) : '',
+            photoFile: photo,                                     // ✅ 서버 업로드용 File
+            photoUrl: URL.createObjectURL(photo),                 // ✅ 화면 미리보기용 URL
         })
+
+        // try {
+        //     await submitUserInfo(userId as string, {
+        //         name: user.name,
+        //         gender: user.gender ?? '',
+        //         age: user.age ?? 0,
+        //         photoBinary: user.photoFile as File,   // ✅ File or Blob 전달
+        //     })
+    
+        // } catch (error) {
+        //     console.error('Main API 호출 실패:', error)
+        // }
+        
         navigate('/main')
     }
 
@@ -78,7 +93,6 @@ export default function Info() {
                     }
                 />
 
-                {/* ✅ Form 안에서 조건부 렌더링 */}
                 {isFormComplete && (
                     <NextButton onClick={handleNext}>다음으로</NextButton>
                 )}

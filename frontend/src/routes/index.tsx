@@ -3,8 +3,10 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Home from './pages/Home'
 import Info from './pages/Info'
 import Main from './pages/Main'
+import Grave from './pages/Grave'
 
 import { UserProvider } from '../contexts/UserContext'
+import { UserIdProvider } from '../contexts/UserIdContext'
 
 const router = createBrowserRouter([
   {
@@ -18,14 +20,20 @@ const router = createBrowserRouter([
   { path: '/main', 
     element: <Main /> 
   },
-
+  {
+    path: '/grave',
+    element: <Grave />
+}
 ])
 
 export default function Router() {
 
   return (
-  <UserProvider>
-    <RouterProvider router={router} />
-  </UserProvider>
+  <UserIdProvider>
+    <UserProvider>
+      <RouterProvider router={router} />
+    </UserProvider>
+  </UserIdProvider>
+
   )
 }
