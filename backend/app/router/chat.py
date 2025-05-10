@@ -178,3 +178,18 @@ def answer_question(user_id: str, session_id: int, answer: str, db: Session = De
     db.commit()
     
     return {"message": "Answer updated successfully"}
+
+class SessionSummaryResponse(BaseModel):
+    message: str
+
+@router.get("/session_summary/{user_id}", response_model=SessionSummaryResponse)
+def get_summary(user_id: str, session_id: int, db: Session = Depends(get_db)):
+    session = db.query(SessionModel).filter(
+        SessionModel.user_id == user_id,
+        SessionModel.id == session_id
+    ).first()
+    
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    
+    return {"message": session.summary}
