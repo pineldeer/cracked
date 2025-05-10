@@ -1,4 +1,4 @@
-import type { rawUserInfo } from "../\btypes/type"
+import type { rawUserInfo } from "../types/type"
 
 // src/api/api.ts
 const BASE_URL = 'https://backend.cracked-tombstone.org'
@@ -37,7 +37,7 @@ export const submitUserInfo = async (
 }
 
 export const getUserInfo = async (userId: string) : Promise<rawUserInfo> => {
-  const response = await fetch(`${BASE_URL}/api/users/${userId}`)
+  const response = await fetch(`${BASE_URL}/api/users/user_info/${userId}`)
   if (!response.ok) throw new Error('유저 정보 불러오기 실패')
   return response.json()
 }
@@ -60,7 +60,7 @@ export const getPortraitImage = async (userId: string) => {
 
 
 
-export const submitGravestone = async (userId: string, text: string) => {
+export const submitGraveContent = async (userId: string, text: string) => {
   const response = await fetch(`${BASE_URL}/api/grave/save_grave_content/${userId}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -70,7 +70,7 @@ export const submitGravestone = async (userId: string, text: string) => {
   return response.json()
 }
 
-export const getGravestone = async (userId: string) => {
+export const getGraveContent = async (userId: string) : Promise<string> => {
   const response = await fetch(`${BASE_URL}/api/grave/get_grave_content/${userId}`)
   if (!response.ok) throw new Error('묘비문 불러오기 실패')
   return response.json()

@@ -2,20 +2,25 @@ package com.example.cracked_android.network
 
 import com.example.cracked_android.network.dto.ChatContent
 import com.example.cracked_android.network.dto.UserInfo
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MyRestAPI {
-    @POST("/api/users/register/{user_id}")
+    @Multipart
+    @POST("/api/users/android/register")
     suspend fun registerUser(
-        @Path("user_id") userId:String,
-        @Query("name") name: String,
-        @Query("gender") gender: String,
-        @Query("age") age: Int,
-    )
+        @Part("name") name: RequestBody,
+        @Part("gender") gender: RequestBody,
+        @Part("age") age: RequestBody,
+        @Part image: MultipartBody.Part
+    ): String
 
     @GET("/api/users/user_info/{user_id}")
     suspend fun getUserInfo(
@@ -24,7 +29,7 @@ interface MyRestAPI {
     ): UserInfo
 
     suspend fun getImageURL(userID:String):String{
-        return "https://67e3-119-196-234-23.ngrok-free.app/api/users/image/${userID}"
+        return "https://backend.cracked-tombstone.org/api/users/image/${userID}"
     }
 
     @POST("/api/grave/save_grave_content/{user_id}")

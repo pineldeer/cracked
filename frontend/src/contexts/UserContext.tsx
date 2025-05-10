@@ -1,6 +1,7 @@
 // src/contexts/UserContext.tsx
 import React, { createContext, useContext, useState } from 'react'
-import type { userInfo } from '../\btypes/type'
+import type { userInfo } from '../types/type'
+
 
 interface UserContextType {
     user: userInfo

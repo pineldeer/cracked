@@ -2,57 +2,69 @@
 import styled, { keyframes } from 'styled-components'
 import useUser from '../../hooks/useUser'
 import { useEffect, useState } from 'react'
-import { getPortraitImage, submitUserInfo, getUserInfo } from '../../api/api'
+import { getGraveContent, getPortraitImage, getUserInfo } from '../../api/api'
 import { getUserIdImediately } from '../../contexts/UserIdContext'
 import { useNavigate } from 'react-router-dom'
 // import { userInfo } from '../../\btypes/type'
 
 export default function Main() {
     const { user, setUser } = useUser()
-    // const userId = useUserId()
 
     const navigate = useNavigate()
     
     const [isModalOpen, setIsModalOpen] = useState(false) // ✅ modal 상태
     const [epitaph, setEpitaph] = useState('')            // ✅ 묘비문 상태
 
+    // const [isLoading, setIsLoading] = useState(true)       // ✅ 로딩 상태
+
     useEffect(() => {
+        const id = getUserIdImediately()
+        if (!id) navigate('/')
+        
         async function fetchUserInfo() {
-            console.log("fetch called!")
-            const id = getUserIdImediately()
+            // setIsLoading(true)
+            const res = await getUserInfo(id as string)
+            if (!res) navigate('/')
+            else {
+                const portraitUrl = await getPortraitImage(id as string)
+                setUser({
+                    name: res.username,
+                    photoUrl: res.image_path,
+                    photoFile: undefined,
+                    gender: res.gender,
+                    age: res.age,
+                    portraitUrl: portraitUrl,
+                })
 
-            if (id) {
-                const res = await getUserInfo(id)
-                if (res) {
-                    setUser({
-                        name: res.username,
-                        photoUrl: res.image_path,
-                        photoFile: undefined,
-                        gender: res.gender,
-                        age: res.age,
-                        portraitUrl: await getPortraitImage(id),
-                    })
-                } 
-                else if (!user.name || !user.age || !user.gender || !user.photoFile) navigate('/')
-                else {
-                    const res = await submitUserInfo(id, {name: user.name, gender: user.gender, age: user.age, photoBinary: user.photoFile})
-                    if (res) {
-                        const portraitUrl = await getPortraitImage(id)
-                        // setUser((prev: userInfo) => ({...prev, portraitUrl: await getPortraitImage(userId)} as userInfo))  
-                        console.log(portraitUrl)
-                    }
-                }
-            } else {
-                console.error('userId가 없습니다.')
-                return
+                // setIsLoading(false)
             }
-
         }
 
-        fetchUserInfo()
+        fetchUserInfo()        
     }, [])
 
     const now = new Date().toLocaleString()
+
+
+    useEffect(() => {
+        const id = getUserIdImediately()
+        if (!id) return
+
+        async function fetch() {
+            if (isModalOpen) {
+                const res = await getGraveContent(id as string)
+                if (res) {
+                    setEpitaph(res)
+                } else {
+                    console.log("묘비문을 가져오는 데 실패했습니다.")
+                }
+            }
+        }
+
+        fetch()
+    }, [isModalOpen])
+
+    
 
     return (
         <Container>
