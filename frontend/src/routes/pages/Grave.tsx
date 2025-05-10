@@ -1,9 +1,28 @@
 // src/pages/Grave.tsx
 import styled from 'styled-components'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { getUserIdImediately } from '../../contexts/UserIdContext'
+import { getGraveContent } from '../../api/api'
 
 export default function Grave() {
     const [epitaph, setEpitaph] = useState('')
+
+    useEffect(() => {
+        const id = getUserIdImediately()
+        if (!id) return
+
+
+        async function fetch() {
+            const res = await getGraveContent(id as string)
+            if (res) {
+                setEpitaph(res)
+            } else {
+                console.log("묘비문을 가져오는 데 실패했습니다.")
+            }
+        }
+
+        fetch()
+    }, [])
 
     return (
         <Container>

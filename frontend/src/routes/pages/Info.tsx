@@ -3,9 +3,12 @@ import styled from 'styled-components'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useUser from '../../hooks/useUser'
+import { getPortraitImage, submitUserInfo } from '../../api/api'
+import { useUserId } from '../../contexts/UserIdContext'
 
 export default function Info() {
     const { user, setUser } = useUser()
+    const userId = useUserId()
 
     const navigate = useNavigate()
 
@@ -21,30 +24,38 @@ export default function Info() {
     }, [photo, name, gender, age])
 
     const handleNext = () => {
+        
         if (!photo) return
 
-        setUser({
-            ...user,
-            name,
-            gender,
-            age: Number(age),
-            photoFile: photo,                                     // ✅ 서버 업로드용 File
-            photoUrl: URL.createObjectURL(photo),                 // ✅ 화면 미리보기용 URL
-        })
+        async function upload() {
+            if (userId && photo) {
+                const res = await submitUserInfo(userId, {
+                    name: name,
+                    gender: gender,
+                    age: Number(age),
+                    photoBinary: photo,   // ✅ File or Blob 전달
+                })
 
-        // try {
-        //     await submitUserInfo(userId as string, {
-        //         name: user.name,
-        //         gender: user.gender ?? '',
-        //         age: user.age ?? 0,
-        //         photoBinary: user.photoFile as File,   // ✅ File or Blob 전달
-        //     })
-    
-        // } catch (error) {
-        //     console.error('Main API 호출 실패:', error)
-        // }
+                if (res) {
+                    console.log("업로드 성공")
+                    const portraitUrl = await getPortraitImage(userId)
+                    setUser({
+                        ...user,
+                        name,
+                        gender,
+                        age: Number(age),
+                        photoFile: photo,                                     // ✅ 서버 업로드용 File
+                        photoUrl: URL.createObjectURL(photo),                 // ✅ 화면 미리보기용 URL
+                        portraitUrl: portraitUrl,                              // ✅ 서버에서 가져온 영정사진 URL
+                    })
+
+                    navigate('/main')
+                }
+            }
+        }
+
         
-        navigate('/main')
+        upload()        
     }
 
     return (
