@@ -144,6 +144,10 @@ def answer_question(user_id: str, session_id: int, answer: str, db: Session = De
     if not chat:
         raise HTTPException(status_code=404, detail="Chat not found")
     
+        
+    chat.answer = answer
+    db.commit()
+
     messages = [{
         "role": "system",
         "content": (
@@ -158,13 +162,19 @@ def answer_question(user_id: str, session_id: int, answer: str, db: Session = De
     for chat in previous_chats:
         messages.append({"role": "assistant", "content": chat["question"]})
         messages.append({"role": "user", "content": chat["answer"]})
-
+    client = OpenAI(api_key=OPENAI_API_KEY)
     response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=messages
-        )
-        
-    chat.answer = answer
+    )
+    summary = response.choices[0].message.content.strip()
+    session = db.query(SessionModel).filter(
+        SessionModel.user_id == user_id,
+        SessionModel.id == session_id
+    ).first()
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    session.summary = summary
     db.commit()
     
     return {"message": "Answer updated successfully"}
