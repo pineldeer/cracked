@@ -20,7 +20,7 @@ def create_tables(conn):
         # 사용자 테이블 생성
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id TEXT PRIMARY KEY,
             username TEXT NOT NULL UNIQUE,
             image_path TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
