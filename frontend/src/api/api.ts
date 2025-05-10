@@ -76,6 +76,11 @@ export const getGraveContent = async (userId: string) : Promise<rawGraveContent>
   return response.json()
 }
 
+export const exploreOtherGrave = async (userId: string) : Promise<{"grave_content": string}> => {
+    const response = await fetch(`${BASE_URL}/api/grave/get_other_grave_content/${userId}`)
+    if (!response.ok) throw new Error('타인의 묘비문 불러오기 실패')
+    return response.json()
+}
 
 
 
