@@ -1,5 +1,6 @@
 package com.example.cracked_android
 
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -14,9 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.cracked_android.pages.InfoPage
 import com.example.cracked_android.pages.PortraitPage
 import com.example.cracked_android.pages.StartPage
@@ -61,10 +64,20 @@ private fun MyApp(
                 StartPage{navController.navigate("InfoPage")}
             }
             composable("InfoPage") {
-                InfoPage(onNextClick = {navController.navigate("PortraitPage")})
+                InfoPage(onNextClick = {
+                    //val encodedUrl = Uri.encode(it)
+                    //navController.navigate("PortraitPage?imageUrl=$encodedUrl")
+                    navController.navigate("PortraitPage")
+                })
             }
-            composable("PortraitPage") {
-                PortraitPage()
+            composable("PortraitPage",
+                //arguments = listOf(navArgument("imageUrl") { type = NavType.StringType })
+            ) {
+                //val imageUrl = it.arguments?.getString("imageUrl") ?: ""
+                PortraitPage(/**/){
+
+                    navController.navigate("GravePage")
+                }
             }
 
 

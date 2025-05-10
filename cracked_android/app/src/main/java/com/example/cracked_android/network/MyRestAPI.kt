@@ -4,6 +4,7 @@ import com.example.cracked_android.network.dto.ChatContent
 import com.example.cracked_android.network.dto.UserInfo
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
@@ -20,15 +21,15 @@ interface MyRestAPI {
         @Part("gender") gender: RequestBody,
         @Part("age") age: RequestBody,
         @Part image: MultipartBody.Part
-    ): String
+    ): Response<String>
 
     @GET("/api/users/user_info/{user_id}")
     suspend fun getUserInfo(
         @Path("user_id") userId:String,
 
-    ): UserInfo
+    ): Response<UserInfo>
 
-    suspend fun getImageURL(userID:String):String{
+    fun getImageURL(userID:String):String{
         return "https://backend.cracked-tombstone.org/api/users/image/${userID}"
     }
 

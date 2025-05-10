@@ -61,15 +61,22 @@ class InfoViewModel @Inject constructor(
         gender: String,
         age: Int,
         imageFile: File
-    ):String{
+    ):Response<String>{
 
         return api.registerUser(
-           name.toRequestBody("text/plain".toMediaTypeOrNull()),
+            name.toRequestBody("text/plain".toMediaTypeOrNull()),
             gender.toRequestBody("text/plain".toMediaTypeOrNull()),
             age.toString().toRequestBody("text/plain".toMediaTypeOrNull()),
-            fileToMultipartPart(imageFile) )
+            MultipartBody.Part.createFormData(
+                "image", imageFile.name, imageFile.asRequestBody("image/png".toMediaTypeOrNull())
+            ))
+
+
     }
 
+    fun getUserId():String?{
+        return prefRepository.getPref("userId")
+    }
     fun setUserId(userId: String) {
         prefRepository.setPref("userId",userId)
     }
@@ -83,9 +90,17 @@ class InfoViewModel @Inject constructor(
         return tempFile
     }
 
-    fun fileToMultipartPart(file: File): MultipartBody.Part {
-        val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
-        return MultipartBody.Part.createFormData("images", file.name, requestBody)
+    private val _imageUrl = MutableStateFlow("")
+    val imageUrl: StateFlow<String> = _imageUrl.asStateFlow()
+
+    /*
+    fun setImageUrl(value:String){
+        _imageUrl.value = value
+    }*/
+
+    suspend fun getUserInfo():Response<UserInfo>{
+        val userId = getUserId()!!
+        return api.getUserInfo(userId)
     }
 
 

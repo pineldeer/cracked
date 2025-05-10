@@ -101,8 +101,10 @@ fun InfoPage(
                         age,
                         viewModel.uriToFile(context,imageUri!!))
                     withContext(Dispatchers.Main) {
-                        viewModel.setUserId(response)
-                        onNextClick()
+                        if(response.isSuccessful){
+                            viewModel.setUserId(response.body()!!)
+                            onNextClick()
+                        }
                     }
                 } catch (e:HttpException){
 
