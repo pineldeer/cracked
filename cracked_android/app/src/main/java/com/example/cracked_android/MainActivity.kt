@@ -85,7 +85,9 @@ private fun MyApp(
             composable("GravePage"){
                 GravePage(onSessionClick = {
                     navController.navigate("SessionPage/$it")
-                }, onGraveClick = {})
+                }, onGraveClick = {
+                    navController.navigate("GraveInsidePage")
+                })
             }
             composable ("SessionPage/{sessionId}"){
                 val sessionId = it.arguments!!.getString("sessionId")!!

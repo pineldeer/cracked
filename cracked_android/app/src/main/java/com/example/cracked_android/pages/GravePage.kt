@@ -102,7 +102,7 @@ fun GravePage(
 
         // GraveImage는 항상 중앙
         Box(modifier = Modifier.align(Alignment.Center)) {
-            GraveImage{}
+            GraveImage{onGraveClick()}
         }
     }
 }
