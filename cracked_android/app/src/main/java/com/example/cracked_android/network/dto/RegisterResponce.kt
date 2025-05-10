@@ -7,5 +7,5 @@ import com.squareup.moshi.JsonClass
 
 data class RegisterResponse(
     @Json(name = "message")val message: String,
-    @Json(name = "userId") val userId: Int
+    @Json(name = "userId") val userId: String
 )

@@ -102,7 +102,7 @@ fun InfoPage(
                         viewModel.uriToFile(context,imageUri!!))
                     withContext(Dispatchers.Main) {
                         if(response.isSuccessful){
-                            viewModel.setUserId(response.body()!!)
+                            viewModel.setUserId(response.body()!!.userId)
                             onNextClick()
                         }
                     }
