@@ -85,7 +85,7 @@ export const getGraveContent = async (userId: string) : Promise<rawGraveContent>
 
 
 export const getAllSessions = async (userId: string) : Promise<rawSession[]> => {
-    const response = await fetch(`${BASE_URL}/api/chat/get_all_sessions/${userId}`)
+    const response = await fetch(`${BASE_URL}/api/chat/get_all_session/${userId}`)
     if (!response.ok) throw new Error('세션 불러오기 실패')
     return response.json()
 }
@@ -106,21 +106,19 @@ export const createSession = async (userId: string, color: string, x: number, y:
 }  
 
 
-
-
 export const getAllChats = async (userId: string, session_id: number) : Promise<rawChat[]> => {
     const query = new URLSearchParams({
         session_id: String(session_id),
     })
 
-    const response = await fetch(`${BASE_URL}/api/chat/get_all_chats/${userId}?${query.toString()}`)
+    const response = await fetch(`${BASE_URL}/api/chat/get_all_chat/${userId}?${query.toString()}`)
     if (!response.ok) throw new Error('채팅 불러오기 실패')
     return response.json()
 }
 
 
 
-export const createQuestion = async (userid: string, session_id: number) => {
+export const createQuestion = async (userid: string, session_id: number): Promise<rawChat> => {
     const query = new URLSearchParams({
         session_id: String(session_id),
     })
@@ -135,10 +133,10 @@ export const createQuestion = async (userid: string, session_id: number) => {
 
 export const answerQeuestion = async (userId: string, session_id: string, answer: string) : Promise<{"message": string}> => {
     const query = new URLSearchParams({
-        session_id,
-        answer,
+        session_id : session_id,
+        answer : answer,
     })
-    const response = await fetch(`${BASE_URL}/api/chat/answer_question/${userId}${query.toString()}`, {
+    const response = await fetch(`${BASE_URL}/api/chat/answer_question/${userId}?${query.toString()}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
     })
