@@ -13,6 +13,8 @@ def User_to_dict(user: User):
     return {
         "user_id": user.id,
         "username": user.username,
+        "gender": user.gender,
+        "age": user.age,
         "image_path": user.image_path,
         "created_at": str(user.created_at)
     }
@@ -32,7 +34,7 @@ class RegisterUserResponse(BaseModel):
     message: str
 
 @router.post("/register/{user_id}", response_model=RegisterUserResponse)
-def register_user(user_id: str, name: str, image: UploadFile = File(...), db: Session = Depends(get_db)):
+def register_user(user_id: str, name: str, gender: str, age: int, image: UploadFile = File(...), db: Session = Depends(get_db)):
     # 이미지 저장
     image_path = save_image(image, user_id)
 
@@ -40,6 +42,8 @@ def register_user(user_id: str, name: str, image: UploadFile = File(...), db: Se
     new_user = User(
         id=user_id,
         username=name,
+        gender=gender,
+        age=age,
         image_path=image_path
     )
     
@@ -53,6 +57,8 @@ def register_user(user_id: str, name: str, image: UploadFile = File(...), db: Se
 class GetUserInfoResponse(BaseModel):
     user_id: str
     username: str
+    gender: str
+    age: int
     image_path: str
     created_at: str
 
