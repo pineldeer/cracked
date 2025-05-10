@@ -14,6 +14,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.cracked_android.pages.InfoPage
 import com.example.cracked_android.pages.StartPage
 import com.example.cracked_android.ui.theme.Cracked_androidTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,9 +27,9 @@ class MainActivity : ComponentActivity() {
             Cracked_androidTheme {
                 // A surface container using the 'background' color from the theme
                 if(true){
-                    MyApp(startDestination = "MainPage")
+                    MyApp(startDestination = "StartPage")
                 }else{
-                    MyApp(startDestination = "MainPage")
+                    MyApp(startDestination = "StartPage")
                 }
             }
         }
@@ -47,7 +48,12 @@ private fun MyApp(
     ) {
         NavHost(navController = navController, startDestination = startDestination) {
             composable("StartPage") {
-                StartPage{}
+                StartPage{navController.navigate("InfoPage")}
+            }
+            composable("InfoPage") {
+                InfoPage {
+                    
+                }
             }
 
 
