@@ -1,5 +1,5 @@
 // src/pages/Main.tsx
-import styled, { keyframes } from 'styled-components'
+import styled, { keyframes, createGlobalStyle } from 'styled-components'
 import useUser from '../../hooks/useUser'
 import { useEffect, useState } from 'react'
 import { getGraveContent, getPortraitImage, getUserInfo, submitGraveContent } from '../../api/api'
@@ -7,7 +7,17 @@ import { getUserIdImediately } from '../../contexts/UserIdContext'
 import { useNavigate } from 'react-router-dom'
 // import { userInfo } from '../../\btypes/type'
 import StarBox from '../../components/StarBox'
+import graveIcon from '../../assets/grave-icon.png'
+import graveBack from '../../assets/grave-back.png'
 
+const YiSunShinFont = createGlobalStyle`
+  @font-face {
+    font-family: 'YiSunShinRegular';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/YiSunShinRegular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+`;
 
 export default function Main() {
     const { user, setUser } = useUser()
@@ -81,6 +91,7 @@ export default function Main() {
     
     return (
         <Container>
+            <YiSunShinFont />
             <>
                 <Portrait src={user.portraitUrl ?? undefined} alt="영정사진" />
                 <MessageSection>
@@ -89,13 +100,13 @@ export default function Main() {
                 </MessageSection>
                 <Spacer />
                 <GraveIcon onClick={() => setIsModalOpen(true)}>
-                    🪦
+                    <img src={graveIcon} alt="묘비 아이콘" style={{ width: 300, height: 300 }} />
                 </GraveIcon>
 
                 {isModalOpen && (
                     <ModalOverlay onClick={() => setIsModalOpen(false)}>
-                        <ModalSheet onClick={(e: React.ChangeEvent<HTMLDivElement>) => e.stopPropagation()}> {/* ✅ 모달 클릭 시 이벤트 버블링 방지 */}
-                            {/* <ModalTitle>나의 묘비문을 작성하세요</ModalTitle> */}
+                        <ModalSheet onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
+                            <GraveBackImg src={graveBack} alt="묘비 배경" />
                             <EpitaphInput
                                 value={epitaph}
                                 onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setEpitaph(e.target.value)}
@@ -130,10 +141,10 @@ const Container = styled.div`
 // `
 
 const Portrait = styled.img`
-    width: 300px;
-    height: 300px;
+    width: 170px;
+    height: 170px;
     object-fit: cover;
-    border: 8px solid black;
+    border: 8px solid #000;
     border-radius: 10px;
     margin-top: 5rem;
 `
@@ -144,11 +155,13 @@ const MessageSection = styled.div`
 `
 
 const MainMessage = styled.h2`
+    font-family: 'Noto Sans KR', sans-serif;
     font-size: 1.5rem;
     /* color: #333; */
 `
 
 const SubMessage = styled.p`
+    font-family: 'Noto Sans KR', sans-serif;
     margin-top: 1rem;
     font-size: 1rem;
     /* color: #666; */
@@ -199,16 +212,18 @@ const ModalOverlay = styled.div`
 `
 
 const ModalSheet = styled.div`
-    background: #737270;
+    position: relative;
+    background: none;
     width: 100%;
-    max-height: 80%;
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
-    padding: 1.5rem;
-    box-shadow: 0 -4px 15px rgba(0,0,0,0.2);
-    animation: ${({ $isClosing }) => ($isClosing ? slideDown : slideUp)} 0.3s ease-out;
+    max-width: 800px;
+    aspect-ratio: 1/1.2; // 묘비 이미지 비율에 맞게 조정
+    margin: 0 auto;
+    // box-shadow: 0 -4px 15px rgba(0,0,0,0.2);
+    animation: ${slideUp} 0.3s ease-out;
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 `
 
 // const ModalTitle = styled.h2`
@@ -218,16 +233,35 @@ const ModalSheet = styled.div`
 // `
 
 const EpitaphInput = styled.textarea`
-    background-color: #737270;
-    width: 100%;
-    min-height: 200px;
-    resize: vertical;
-    padding-block: 1rem;
-    padding-inline: 1.5rem;  // ✅ 좌우 padding만 따로 설정
-    border: 1px solid black;
-    border-radius: 8px;
-    font-size: 1rem;
-    outline: none;
-    box-sizing: border-box;
+    position: absolute;
+    z-index: 2;
+    left: 50%;
+    top: 55%; // 묘비 중앙에 오도록 조정 (이미지에 따라 값 조정)
+    transform: translate(-50%, -50%);
+    width: 70%;
+    height: 70%;
+    background: rgba(255,255,255,0.0);
+    border: none;
+    color: rgba(255,255,255,0.7);
+    font-family: 'YiSunShinRegular';
+    font-style: normal;
+
+    font-size: 1.5rem;
+    text-align: center;
     resize: none;
+    outline: none;
+    // font-family: 'Noto Sans KR', sans-serif;
+    // 필요시 box-shadow, padding 등 추가
+`
+
+const GraveBackImg = styled.img`
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    z-index: 1;
+    pointer-events: none;
+    user-select: none;
 `
