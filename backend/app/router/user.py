@@ -8,6 +8,8 @@ from app.config import UPLOAD_FOLDER
 from app.utils.process_image import portrait_image
 from models import User
 import uuid
+from fastapi import Form
+
 router = APIRouter()
 
 def User_to_dict(user: User):
@@ -39,7 +41,13 @@ class RegisterUserAndroidResponse(BaseModel):
     user_id: str
 
 @router.post("/android/register", response_model=RegisterUserAndroidResponse)
-def register_user_android(name: str, gender: str, age: int, image: UploadFile = File(...), db: Session = Depends(get_db)):
+def register_user_android(
+    name: str = Form(...),
+    gender: str = Form(...),
+    age: int = Form(...),
+    image: UploadFile = File(...),
+    db: Session = Depends(get_db)
+):
     # 이미지 저장
 
     # 새로운 유저 생성
