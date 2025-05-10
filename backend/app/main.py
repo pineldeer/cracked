@@ -20,9 +20,6 @@ app.include_router(user.router, prefix="/api/users", tags=["User"])
 app.include_router(grave.router, prefix="/api/grave", tags=["Grave"])
 app.include_router(chat.router, prefix="/api/chat", tags=["Chat"])
 
-
-
-
 # app.include_router(llm_crews_api.router, prefix="/api/crews", tags=["LLM Crews V"])
 
 if __name__ == "__main__":
