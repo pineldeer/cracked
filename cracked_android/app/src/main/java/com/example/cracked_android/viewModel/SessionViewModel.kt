@@ -31,9 +31,9 @@ class SessionViewModel @Inject constructor(
         _questions.value = value
     }
 
-    fun addQuestion(value:ChatContent){
+    fun addQuestion(sessionId: String){
         val nl=_questions.value.toMutableList()
-        nl.add(value)
+        nl.add(ChatContent(0,getUserId()!!,sessionId,newQuestion.value,newAnswer.value, questions.value.size))
         setQuestions(nl)
     }
 
@@ -77,5 +77,12 @@ class SessionViewModel @Inject constructor(
         api.answerQuestion(userId, sessionId, newAnswer.value)
 
 
+    }
+
+    private val _newQuestion = MutableStateFlow("")
+    val newQuestion: StateFlow<String> = _newQuestion.asStateFlow()
+
+    fun setNewQuestion(value: String){
+        _newQuestion.value = value
     }
 }

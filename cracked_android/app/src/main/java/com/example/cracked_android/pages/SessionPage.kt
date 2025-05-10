@@ -43,6 +43,7 @@ fun SessionPage(
 ) {
     val questions by viewModel.questions.collectAsState()
     var isCreating by remember { mutableStateOf(false) }
+    val newQuestion by viewModel.newQuestion.collectAsState()
     val newAnswer by viewModel.newAnswer.collectAsState()
 
     LaunchedEffect(Unit){
@@ -56,6 +57,7 @@ fun SessionPage(
             modifier = Modifier
                 .weight(1f),
             questions = questions,
+            newQuestion = newQuestion,
             isCreating = isCreating,
             newAnswer = newAnswer,
             onAnswerChange = { viewModel.setNewAnswer(it) },
@@ -63,7 +65,9 @@ fun SessionPage(
                 if (newAnswer.isNotBlank()) {
                     CoroutineScope(Dispatchers.IO).launch {
                         viewModel.answerQuestion(sessionId)
+                        viewModel.addQuestion(sessionId)
                         withContext(Dispatchers.Main){
+                            viewModel.setNewQuestion("")
                             viewModel.setNewAnswer("")
                             isCreating = false
                         }
@@ -85,7 +89,7 @@ fun SessionPage(
                         val response = viewModel.createQuestion(sessionId)
                         withContext(Dispatchers.Main){
                             if(response.isSuccessful){
-                                viewModel.addQuestion(response.body()!!)
+                                viewModel.setNewQuestion(response.body()!!.question)
                                 isCreating = true
                             }
                         }
@@ -114,6 +118,7 @@ fun TopBar(onBackClick: () -> Unit) {
 fun QuestionList(
     modifier: Modifier=Modifier,
     questions: List<ChatContent>,
+    newQuestion:String,
     isCreating: Boolean,
     newAnswer: String,
     onAnswerChange: (String) -> Unit,
@@ -132,6 +137,7 @@ fun QuestionList(
         if (isCreating) {
             item {
                 NewQuestionInput(
+                    newQuestion = newQuestion,
                     answer = newAnswer,
                     onAnswerChange = onAnswerChange,
                     onSubmit = onSubmit,
