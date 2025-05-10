@@ -1,1 +1,1 @@
-python database.py
+python create_db.py
