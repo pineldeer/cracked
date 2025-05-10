@@ -1,11 +1,6 @@
 from PIL import Image, ImageDraw
 
 def portrait_image(image_path: str, output_path: str) -> None:
-    """
-    Process the image to create a portrait version.
-    """
-    # Placeholder for image processing logic
-    # For example, using PIL or OpenCV to process the image
     image = Image.open(image_path).convert("L")  # Convert to grayscale
 
     # Convert to RGB to allow drawing in color (e.g., black lines on gray)
