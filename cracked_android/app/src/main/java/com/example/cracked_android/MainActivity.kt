@@ -52,7 +52,7 @@ private fun MyApp(
             }
             composable("InfoPage") {
                 InfoPage {
-                    
+
                 }
             }
 
