@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -33,19 +34,24 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.cracked_android.R
 import com.example.cracked_android.ui.theme.QuestionsPanel
+import com.example.cracked_android.viewModel.GraveViewModel
 
 @Composable
 fun GravePage() {
+    val viewModel = hiltViewModel<GraveViewModel>()
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
 
 
     var showQuestions by remember { mutableStateOf(false) }
     var isCreating by remember { mutableStateOf(false) }
-    var newAnswer by remember { mutableStateOf("") }
-    val questions = remember { mutableStateListOf<Pair<String, String>>() }
+    //var newAnswer by remember { mutableStateOf("") }
+    //val questions = remember { mutableStateListOf<Pair<String, String>>() }
+    val newAnswer by viewModel.newAnswer.collectAsState()
+    val questions by viewModel.questions.collectAsState()
 
     val graveOffsetY by animateDpAsState(
         targetValue = if (showQuestions) -screenHeight / 4 else 0.dp,
@@ -96,23 +102,23 @@ fun GravePage() {
                 questions = questions,
                 isCreating = isCreating,
                 newAnswer = newAnswer,
-                onAnswerChange = { newAnswer = it },
+                onAnswerChange = { viewModel.setNewAnswer(it) },
                 onStartCreating = { isCreating = true },
                 onCancelCreating = {
-                    newAnswer = ""
+                    viewModel.setNewAnswer("")
                     isCreating = false
                 },
                 onSubmitAnswer = {
                     if (newAnswer.isNotBlank()) {
-                        questions.add("질문입니다" to newAnswer)
-                        newAnswer = ""
+                        viewModel.addQuestion("질문입니다" to newAnswer)
+                        viewModel.setNewAnswer("")
                         isCreating = false
                     }
                 },
                 onClose = {
                     showQuestions = false
                     isCreating = false
-                    newAnswer = ""
+                    viewModel.setNewAnswer("")
                 }
             )
         }
