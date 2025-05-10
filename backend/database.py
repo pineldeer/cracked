@@ -31,7 +31,7 @@ def create_tables(conn):
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS grave (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
+            user_id TEXT,
             content TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
@@ -41,7 +41,7 @@ def create_tables(conn):
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS chat (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
+            user_id TEXT,
             question TEXT,
             answer TEXT,
             order_idx INTEGER,
