@@ -1,6 +1,8 @@
 from fastapi import APIRouter, HTTPException, UploadFile, File, Depends
 
 import os
+
+from fastapi.responses import FileResponse
 from database import create_connection
 
 from app.config import UPLOAD_FOLDER
@@ -38,5 +40,21 @@ def register_user(user_id: str, name: str, image: UploadFile = File(...)):
 @router.get("/user_info/{user_id}")
 def get_user_info(user_id: str):
     # DB에 user_id 가지고 DB user 테이블에 유저 정보 조회
-    return {"message": "User info retrieved successfully"}
+    conn = create_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+    user = cursor.fetchone()
+    conn.close()
+    return user[0]
+
+# 이미지 다운로드
+@router.get("/image/{user_id}")
+def download_image(user_id: str):
+    # 이미지 다운로드
+    conn = create_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT image_path FROM users WHERE id = ?", (user_id,))
+    image_path = cursor.fetchone()
+    conn.close()
+    return FileResponse(image_path[0])
 
