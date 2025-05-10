@@ -28,7 +28,7 @@ app.include_router(chat.router, prefix="/api/chat", tags=["Chat"])
 if __name__ == "__main__":
     import uvicorn
 
-    server_domain = "0.0.0.0"
+    server_domain = "localhost"
     port = 8000
     print(server_domain, port)
     uvicorn.run("app.main:app", host=server_domain, port=int(port), reload=True)
