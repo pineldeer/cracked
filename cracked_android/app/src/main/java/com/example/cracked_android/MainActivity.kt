@@ -81,7 +81,7 @@ private fun MyApp(
                 }
             }
             composable("GravePage"){
-                GravePage()
+                GravePage{}
             }
 
 
