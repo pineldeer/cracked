@@ -10,6 +10,8 @@ import StarBox from '../../components/StarBox'
 import StarVerse from '../../components/StarVerse'
 import graveIcon from '../../assets/grave-icon.png'
 import graveBack from '../../assets/grave-back.png'
+import { FaArrowAltCircleRight } from "react-icons/fa";
+
 
 const YiSunShinFont = createGlobalStyle`
   @font-face {
@@ -114,9 +116,16 @@ export default function Main() {
                 {userId && <StarVerse userId={userId} />}
                 <Overlay>
                     <Spacer />
-                    <GraveIcon onClick={() => setIsModalOpen(true)}>
-                        <img src={graveIcon} alt="묘비 아이콘" style={{ width: 300, height: 300 }} />
-                    </GraveIcon>
+                    <GraveIconWrapper>
+                        <GraveIcon onClick={() => setIsModalOpen(true)}>
+                            <img src={graveIcon} alt="묘비 아이콘" style={{ width: 300, height: 300 }} />
+                        </GraveIcon>
+                        
+                        <ArrowButton onClick={() => navigate('/grave')}>
+                            <FaArrowAltCircleRight size={50} color="white"/>
+                        </ArrowButton>
+                    </GraveIconWrapper>
+
                     {isModalOpen && (
                         <ModalOverlay onClick={() => setIsModalOpen(false)}>
                             <ModalSheet onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
@@ -129,8 +138,10 @@ export default function Main() {
                             </ModalSheet>
                         </ModalOverlay>
                     )}
+
+
+                    {/* <Spacer /> */}
                 </Overlay>
-                {/* <StarBox /> */}
                 <Spacer />
             </Section>
         </Container>
@@ -216,18 +227,36 @@ const SubMessage = styled.p`
 const Spacer = styled.div`
     flex-grow: 1;
 `
-
-const GraveIcon = styled.div`
-    font-size: 16rem;
-    cursor: pointer;
-    margin-bottom: 3rem;
-    transition: transform 0.3s;
-
-    &:hover {
-        transform: scale(1.2);
-    }
+const GraveIconWrapper = styled.div`
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2rem;
 `
 
+const GraveIcon = styled.div`
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`
+
+const ArrowButton = styled.div`
+    position: absolute;
+    right: -15rem;
+    top: 100%;
+    transform: translateY(-80%);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+
+    &:hover {
+        transform: translateY(-50%) scale(1.2);   // ✅ hover 시 확대
+    }
+`
 const slideUp = keyframes`
     from {
         transform: translateY(100%);

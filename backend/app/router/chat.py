@@ -143,6 +143,26 @@ def answer_question(user_id: str, session_id: int, answer: str, db: Session = De
     
     if not chat:
         raise HTTPException(status_code=404, detail="Chat not found")
+    
+    messages = [{
+        "role": "system",
+        "content": (
+            "당신은 사용자가 자신의 인생을 돌아보고 묘비문을 쓰도록 돕는 대화 코치입니다. "
+            "이전 대화 내용(질문과 답변)을 분석하여, 이 대화의 요약을 작성하세요. "
+            "이 요약은 사용자가 자신의 감정과 생각을 정리하는 데 도움이 되어야 합니다. "
+            "요약은 간결하고 명확해야 하며, 사용자가 자신의 감정과 생각을 다시 돌아볼 수 있도록 유도해야 합니다. "
+            "요약은 반드시 한 문장이어야 합니다."
+        )
+    }]
+    previous_chats = get_all_chat(user_id, session_id, db)
+    for chat in previous_chats:
+        messages.append({"role": "assistant", "content": chat["question"]})
+        messages.append({"role": "user", "content": chat["answer"]})
+
+    response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=messages
+        )
         
     chat.answer = answer
     db.commit()

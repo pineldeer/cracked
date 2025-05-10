@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom'
 import useUser from '../../hooks/useUser'
 import { getPortraitImage, submitUserInfo } from '../../api/api'
 import { useUserId } from '../../contexts/UserIdContext'
-import { FaUserCircle } from "react-icons/fa";
+
+import {FaUserCircle} from "react-icons/fa"
 
 export default function Info() {
     const { user, setUser } = useUser()
