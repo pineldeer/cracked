@@ -1,4 +1,4 @@
-import type { rawUserInfo } from "../types/type"
+import type { rawUserInfo, rawGraveContent } from "../types/type"
 
 // src/api/api.ts
 const BASE_URL = 'https://backend.cracked-tombstone.org'
@@ -70,14 +70,11 @@ export const submitGraveContent = async (userId: string, text: string) => {
   return response.json()
 }
 
-export const getGraveContent = async (userId: string) : Promise<string> => {
+export const getGraveContent = async (userId: string) : Promise<rawGraveContent> => {
   const response = await fetch(`${BASE_URL}/api/grave/get_grave_content/${userId}`)
   if (!response.ok) throw new Error('묘비문 불러오기 실패')
   return response.json()
 }
-
-
-
 
 
 

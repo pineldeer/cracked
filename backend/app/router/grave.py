@@ -13,6 +13,11 @@ class GraveContent(BaseModel):
 # 묘비명 등록
 @router.post("/save_grave_content/{user_id}")
 def save_grave_content(user_id: str, grave_content: GraveContent, db: Session = Depends(get_db)):
+    # 이미 등록된 묘비명이 있으면 수정
+    existing_grave = db.query(Grave).filter(Grave.user_id == user_id).all()
+    if existing_grave:
+        for grave in existing_grave:
+            db.delete(grave)
     new_grave = Grave(
         user_id=user_id,
         content=grave_content.content

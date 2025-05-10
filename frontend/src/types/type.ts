@@ -16,6 +16,10 @@ export interface rawUserInfo {
     created_at: string
 }
 
+export interface rawGraveContent {
+    grave_content: string
+}
+
 
 export interface rawChatItem {
     id: number
