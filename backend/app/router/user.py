@@ -6,7 +6,7 @@ from fastapi.responses import FileResponse
 from database import create_connection
 from pydantic import BaseModel
 from app.config import UPLOAD_FOLDER
-
+from utils.process_image import portrait_image
 router = APIRouter()
 
 def save_image(image: UploadFile, user_id: str):
@@ -15,6 +15,9 @@ def save_image(image: UploadFile, user_id: str):
     # 이미지 저장
     with open(image_path, "wb") as f:
         f.write(image.file.read())
+    
+    portrait_image(image_path, image_path)
+    
     return image_path
 
 class RegisterUserResponse(BaseModel):
