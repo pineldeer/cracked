@@ -38,7 +38,7 @@ class NetworkModule {
         return Retrofit.Builder()
             .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .baseUrl("https://67e3-119-196-234-23.ngrok-free.app")
+            .baseUrl("https://backend.cracked-tombstone.org")
             .build()
     }
 

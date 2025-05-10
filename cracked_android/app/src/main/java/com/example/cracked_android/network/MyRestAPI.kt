@@ -9,13 +9,12 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MyRestAPI {
-    @POST("/api/users/register/{user_id}")
+    @POST("/api/users/register")
     suspend fun registerUser(
-        @Path("user_id") userId:String,
         @Query("name") name: String,
         @Query("gender") gender: String,
         @Query("age") age: Int,
-    )
+    ):String
 
     @GET("/api/users/user_info/{user_id}")
     suspend fun getUserInfo(
@@ -24,7 +23,7 @@ interface MyRestAPI {
     ): UserInfo
 
     suspend fun getImageURL(userID:String):String{
-        return "https://67e3-119-196-234-23.ngrok-free.app/api/users/image/${userID}"
+        return "https://backend.cracked-tombstone.org/api/users/image/${userID}"
     }
 
     @POST("/api/grave/save_grave_content/{user_id}")

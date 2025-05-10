@@ -9,6 +9,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import retrofit2.Response
+import retrofit2.http.Path
+import retrofit2.http.Query
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,7 +23,7 @@ class InfoViewModel @Inject constructor(
     private val _imageUri:MutableStateFlow<Uri?> = MutableStateFlow(null)
     val imageUri: StateFlow<Uri?> = _imageUri.asStateFlow()
 
-    fun setImageUri(value:Uri){
+    fun setImageUri(value:Uri?){
         _imageUri.value = value
     }
 
@@ -45,6 +48,17 @@ class InfoViewModel @Inject constructor(
         _age.value = value
     }
 
+    suspend fun registerUser(
+        name: String,
+        gender: String,
+        age: Int,
+    ):String{
+        return api.registerUser( name, gender, age)
+    }
+
+    fun setUserId(userId: String) {
+        prefRepository.setPref("userId",userId)
+    }
 
 
 
