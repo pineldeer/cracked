@@ -110,8 +110,8 @@ export default function Main() {
                 <MessageSection>
                     <MainMessage>
                         <ReactTyped
-                            strings={[`${user.name}은 ${now}에 죽었습니다.`]}
-                            typeSpeed={60}
+                            strings={[`${user.name} 님은 ${now}에 죽었습니다.`]}
+                            typeSpeed={65}
                             startDelay={1000}
                             // backSpeed={50}
                             loop={false}
