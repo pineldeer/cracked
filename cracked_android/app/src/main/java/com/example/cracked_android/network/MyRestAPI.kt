@@ -1,6 +1,7 @@
 package com.example.cracked_android.network
 
 import com.example.cracked_android.network.dto.ChatContent
+import com.example.cracked_android.network.dto.RegisterResponse
 import com.example.cracked_android.network.dto.UserInfo
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -21,7 +22,7 @@ interface MyRestAPI {
         @Part("gender") gender: RequestBody,
         @Part("age") age: RequestBody,
         @Part image: MultipartBody.Part
-    ): Response<String>
+    ): Response<RegisterResponse>
 
     @GET("/api/users/user_info/{user_id}")
     suspend fun getUserInfo(
