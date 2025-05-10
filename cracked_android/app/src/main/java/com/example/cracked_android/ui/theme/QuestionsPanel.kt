@@ -102,7 +102,6 @@ fun NewQuestionInput(
     onSubmit: () -> Unit
 ) {
     Column(modifier = Modifier.padding(vertical = 8.dp)) {
-        Text("• 질문입니다", fontWeight = FontWeight.Bold)
         OutlinedTextField(
             value = answer,
             onValueChange = onAnswerChange,
