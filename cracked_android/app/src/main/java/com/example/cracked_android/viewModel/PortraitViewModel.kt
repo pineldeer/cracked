@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.example.cracked_android.data.PrefRepository
 import com.example.cracked_android.network.MyRestAPI
 import com.example.cracked_android.network.dto.UserInfo
+import com.example.cracked_android.network.getImageURL
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,9 +30,9 @@ class PortraitViewModel @Inject constructor(
         return prefRepository.getPref("userId")
     }
 
-    suspend fun fetchUserImage(){
+    fun fetchUserImage(){
         val userId = getUserId()!!
-        setImageUrl(api.getImageURL(userId))
+        setImageUrl(getImageURL(userId))
     }
 
 }

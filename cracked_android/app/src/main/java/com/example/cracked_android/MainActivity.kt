@@ -20,6 +20,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.cracked_android.pages.GravePage
 import com.example.cracked_android.pages.InfoPage
 import com.example.cracked_android.pages.PortraitPage
 import com.example.cracked_android.pages.StartPage
@@ -41,7 +42,7 @@ class MainActivity : ComponentActivity() {
                 if(viewModel.getUserId()==null){
                     MyApp(startDestination = "StartPage")
                 }else{
-                    //MyApp(startDestination = "StartPage")
+                    MyApp(startDestination = "GravePage")
                 }
             }
         }
@@ -78,6 +79,9 @@ private fun MyApp(
 
                     navController.navigate("GravePage")
                 }
+            }
+            composable("GravePage"){
+                GravePage()
             }
 
 

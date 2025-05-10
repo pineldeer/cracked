@@ -30,9 +30,7 @@ interface MyRestAPI {
 
     ): Response<UserInfo>
 
-    fun getImageURL(userID:String):String{
-        return "https://backend.cracked-tombstone.org/api/users/image/${userID}"
-    }
+
 
     @POST("/api/grave/save_grave_content/{user_id}")
     suspend fun saveGraveContent(
@@ -63,4 +61,8 @@ interface MyRestAPI {
     )
 
 
+}
+
+fun getImageURL(userID:String):String{
+    return "https://backend.cracked-tombstone.org/api/users/image/${userID}"
 }
