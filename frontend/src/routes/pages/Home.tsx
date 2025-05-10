@@ -5,6 +5,8 @@ import { useEffect } from 'react'
 import { getUserInfo } from '../../api/api'
 import { useUserId } from '../../contexts/UserIdContext'
 
+import { ReactTyped } from 'react-typed'
+
 export default function Home() {
     const userId = useUserId()
     const navigate = useNavigate()
@@ -24,7 +26,19 @@ export default function Home() {
 
     return (
         <Container>
-            <Header>당신의 묘비에 무엇을 새기시겠습니까?</Header>
+            <Header>
+            <ReactTyped
+                strings={[
+                    '묘비에 남길 말을 적어보세요.',
+                    '죽음을 생각하며 오늘을 살아보세요.',
+                    '나의 마지막 한 마디를 남겨주세요.'
+                ]}
+                loop={true}
+                typeSpeed={60}
+                backSpeed={30}
+                // loop={false}
+            />
+            </Header>
             <StartButton onClick={() => navigate('/info')}>시작하기</StartButton>
         </Container>
     )
@@ -52,14 +66,14 @@ const StartButton = styled.button`
     padding: 0.75rem 1.5rem;
     font-size: 1.1rem;
     font-weight: bold;
-    background-color: #4a90e2;
-    color: white;
+    background-color: #ECEFCA;
+    color: black;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
 
     &:hover {
-        background-color: #357ab8;
+        background-color: #ECEFCA;
     }
 `
