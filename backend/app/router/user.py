@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from app.config import UPLOAD_FOLDER
 from app.utils.process_image import portrait_image
 from models import User
+import uuid
 router = APIRouter()
 
 def User_to_dict(user: User):
@@ -32,6 +33,29 @@ def save_image(image: UploadFile, user_id: str):
 
 class RegisterUserResponse(BaseModel):
     message: str
+
+@router.post("/android/register", response_model=RegisterUserResponse)
+def register_user_android(name: str, gender: str, age: int, image: UploadFile = File(...), db: Session = Depends(get_db)):
+    # 이미지 저장
+    image_path = save_image(image, "android")
+
+    # 새로운 유저 생성
+    # Generate a random hash for android user
+    user_id = str(uuid.uuid4())
+
+    new_user = User(
+        id=user_id,
+        username=name,
+        gender=gender,
+        age=age,
+        image_path=image_path
+    )
+
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return {"message": "User registered successfully",
+            "user_id": user_id}
 
 @router.post("/register/{user_id}", response_model=RegisterUserResponse)
 def register_user(user_id: str, name: str, gender: str, age: int, image: UploadFile = File(...), db: Session = Depends(get_db)):

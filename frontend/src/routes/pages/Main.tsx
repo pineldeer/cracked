@@ -1,59 +1,114 @@
-import styled from 'styled-components'
+// src/pages/Main.tsx
+import styled, { keyframes } from 'styled-components'
 import useUser from '../../hooks/useUser'
 import { useEffect, useState } from 'react'
-import { getPortraitImage } from '../../api/fakeServer'
+import { getGraveContent, getPortraitImage, getUserInfo } from '../../api/api'
+import { getUserIdImediately } from '../../contexts/UserIdContext'
 import { useNavigate } from 'react-router-dom'
+// import { userInfo } from '../../\btypes/type'
 
 export default function Main() {
     const { user, setUser } = useUser()
-    const [loading, setLoading] = useState(true)
+
     const navigate = useNavigate()
+    
+    const [isModalOpen, setIsModalOpen] = useState(false) // ✅ modal 상태
+    const [epitaph, setEpitaph] = useState('')            // ✅ 묘비문 상태
+
+    // const [isLoading, setIsLoading] = useState(true)       // ✅ 로딩 상태
 
     useEffect(() => {
-        // 서버에서 영정사진 받기
-        async function fetchPortrait() {
-            const portraitUrl = await getPortraitImage(user.photoUrl ?? '')
-            setUser({ ...user, portraitUrl })
-            setLoading(false)
+        const id = getUserIdImediately()
+        if (!id) navigate('/')
+        
+        async function fetchUserInfo() {
+            // setIsLoading(true)
+            const res = await getUserInfo(id as string)
+            if (!res) navigate('/')
+            else {
+                const portraitUrl = await getPortraitImage(id as string)
+                setUser({
+                    name: res.username,
+                    photoUrl: res.image_path,
+                    photoFile: undefined,
+                    gender: res.gender,
+                    age: res.age,
+                    portraitUrl: portraitUrl,
+                })
+
+                // setIsLoading(false)
+            }
         }
-        fetchPortrait()
+
+        fetchUserInfo()        
     }, [])
 
     const now = new Date().toLocaleString()
 
+
+    useEffect(() => {
+        const id = getUserIdImediately()
+        if (!id) return
+
+        async function fetch() {
+            if (isModalOpen) {
+                const res = await getGraveContent(id as string)
+                if (res) {
+                    setEpitaph(res)
+                } else {
+                    console.log("묘비문을 가져오는 데 실패했습니다.")
+                }
+            }
+        }
+
+        fetch()
+    }, [isModalOpen])
+
+    
+
     return (
         <Container>
-            {loading ? (
-                <Loading>서버로부터 영정사진을 받는 중...</Loading>
-            ) : (
-                <>
-                    <Portrait src={user.portraitUrl} alt="영정사진" />
-                    <MessageSection>
-                        <MainMessage>{user.name}은 {now}에 죽었습니다.</MainMessage>
-                        <SubMessage>묘비문을 작성해 보세요. 스크롤을 내려주세요 ↓</SubMessage>
-                    </MessageSection>
-                    <Spacer />
-                    <GraveIcon onClick={() => navigate('/epitaph')}>
-                        🪦 {/* emoji로 임시 아이콘 */}
-                    </GraveIcon>
-                </>
-            )}
+            <>
+                <Portrait src={user.portraitUrl ?? undefined} alt="영정사진" />
+                <MessageSection>
+                    <MainMessage>{user.name}은 {now}에 죽었습니다.</MainMessage>
+                    <SubMessage>묘비문을 작성해 보세요. 아래 묘비를 클릭하세요 ↓</SubMessage>
+                </MessageSection>
+                <Spacer />
+                <GraveIcon onClick={() => setIsModalOpen(true)}>
+                    🪦
+                </GraveIcon>
+
+                {isModalOpen && (
+                    <ModalOverlay onClick={() => setIsModalOpen(false)}>
+                        <ModalSheet onClick={(e: React.ChangeEvent<HTMLDivElement>) => e.stopPropagation()}> {/* ✅ 모달 클릭 시 이벤트 버블링 방지 */}
+                            <ModalTitle>나의 묘비문을 작성하세요</ModalTitle>
+                            <EpitaphInput
+                                value={epitaph}
+                                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setEpitaph(e.target.value)}
+                                placeholder="나의 묘비문을 여기에 작성하세요..."
+                            />
+                        </ModalSheet>
+                    </ModalOverlay>
+                )}                
+            </>
         </Container>
     )
 }
 
+// styled-components (추가 + 기존 그대로 유지)
 const Container = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 200vh; /* 스크롤 가능하게 */
+    height: 200vh;
     background-color: #f0f0f0;
 `
 
-const Loading = styled.div`
-    margin-top: 40vh;
-    font-size: 1.5rem;
-`
+// const Loading = styled.div`
+//     margin-top: 40vh;
+//     font-size: 1.5rem;
+// `
 
 const Portrait = styled.img`
     width: 300px;
@@ -93,4 +148,54 @@ const GraveIcon = styled.div`
     &:hover {
         transform: scale(1.2);
     }
+`
+
+const slideUp = keyframes`
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+`
+
+const ModalOverlay = styled.div`
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;          // ✅ 아래서 시작
+`
+
+const ModalSheet = styled.div`
+    background: white;
+    width: 100%;
+    max-height: 80%;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 -4px 15px rgba(0,0,0,0.2);
+    animation: ${slideUp} 0.3s ease-out;
+    display: flex;
+    flex-direction: column;
+`
+
+const ModalTitle = styled.h2`
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    text-align: center;
+`
+
+const EpitaphInput = styled.textarea`
+    width: 100%;
+    min-height: 200px;
+    resize: vertical;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
 `
