@@ -31,6 +31,6 @@ class PrefRepositoryImpl @Inject constructor(
         }
     }
 
-    
+
 
 }

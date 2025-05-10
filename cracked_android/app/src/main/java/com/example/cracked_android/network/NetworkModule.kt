@@ -43,7 +43,7 @@ class NetworkModule {
     }
 
     @Provides
-    fun MyRestAPI(
+    fun provideMyRestAPI(
         retrofit: Retrofit,
     ): MyRestAPI {
         return retrofit.create(MyRestAPI::class.java)
