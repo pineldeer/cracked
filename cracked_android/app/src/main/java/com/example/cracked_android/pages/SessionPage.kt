@@ -86,6 +86,7 @@ fun SessionPage(
                         withContext(Dispatchers.Main){
                             if(response.isSuccessful){
                                 viewModel.addQuestion(response.body()!!)
+                                isCreating = true
                             }
                         }
                     }
