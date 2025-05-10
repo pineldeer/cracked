@@ -168,5 +168,13 @@ def answer_question(user_id: str, session_id: int, answer: str, db: Session = De
             messages=messages
     )
     summary = response.choices[0].message.content.strip()
+    session = db.query(SessionModel).filter(
+        SessionModel.user_id == user_id,
+        SessionModel.id == session_id
+    ).first()
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    session.summary = summary
+    db.commit()
     
     return {"message": "Answer updated successfully"}
