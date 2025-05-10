@@ -190,9 +190,8 @@ const Overlay = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; // 필요에 따라 center로 변경
-  pointer-events: none; // StarVerse와 겹치는 부분 클릭 가능하게 하려면
-  /* pointer-events: auto; // 오버레이 요소 클릭 가능하게 하려면 */
+  justify-content: flex-start;
+  pointer-events: auto;
 `;
 // Portrait, MessageSection, GraveIcon, StarBox 등은 pointer-events: auto; 추가
 const Portrait = styled.img`
@@ -340,3 +339,14 @@ const GraveBackImg = styled.img`
     pointer-events: none;
     user-select: none;
 `
+
+const Sky = styled.div`
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+    overflow: hidden;
+    cursor: crosshair;
+    z-index: 0;
+    pointer-events: auto;
+`;
