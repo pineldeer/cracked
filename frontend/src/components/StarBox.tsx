@@ -162,40 +162,4 @@ const CreateButtion = styled.button`
     padding: 0.75rem 1.5rem;
 `
 
-const Overlay = styled.div`
-  position: absolute;
-  top: 0; left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  pointer-events: none;
-`;
-
-const GraveIcon = styled.div`
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: auto;
-`
-
-const ArrowButton = styled.div`
-    pointer-events: auto;
-`
-
-const Sky = styled.div`
-    position: relative;
-    width: 100vw;
-    height: 100%; // Wrapper의 height에 맞추기
-    background: transparent;
-    overflow: hidden;
-    cursor: crosshair;
-    z-index: 0;
-    pointer-events: auto;
-`;
-
 // const StarIcon = styled.div``
