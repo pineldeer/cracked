@@ -93,14 +93,6 @@ export default function Main() {
         upload()
     }, [isModalOpen])
 
-    useEffect(() => {
-        if (!userId) return; // userId가 없으면 아무것도 하지 않음
-        async function loadStars() {
-            const starList = await getAllSessions(userId);
-            setStars(starList);
-        }
-        loadStars();
-    }, [userId]);
 
     return (
         <Container>
@@ -302,14 +294,6 @@ const slideUp = keyframes`
     }
 `
 
-const slideDown = keyframes`
-    from {
-        transform: translateY(0);
-    }
-    to {
-        transform: translateY(100%);
-    }   
-`
 
 const ModalOverlay = styled.div`
     position: fixed;
@@ -376,17 +360,6 @@ const GraveBackImg = styled.img`
     pointer-events: none;
     user-select: none;
 `
-
-const Sky = styled.div`
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    /* background: transparent; // 배경 제거 */
-    overflow: hidden;
-    cursor: crosshair;
-    z-index: 0;
-    pointer-events: auto;
-`;
 
 const StarVerseWrapper = styled.div`
     position: relative;

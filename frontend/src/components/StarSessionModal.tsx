@@ -50,9 +50,9 @@ export default function StarSessionModal({ userId, sessionId, onClose }: StarSes
 
     return (
         <ModalOverlay onClick={onClose}>
-            <ModalSheet onClick={e => e.stopPropagation()}>
+            <ModalSheet onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
                 <ChatBox>
-                    {chats.map((chat, idx) => (
+                    {chats.map((chat: Chat, idx: number) => (
                         <div key={idx}>
                             <MsgQ>Q. {chat.question}</MsgQ>
                             <MsgA>A. {chat.answer}</MsgA>
@@ -63,10 +63,10 @@ export default function StarSessionModal({ userId, sessionId, onClose }: StarSes
                 <InputRow>
                     <Input
                         value={input}
-                        onChange={handleInputChange}
-                        onKeyDown={e => {
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e)}
+                        onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                             if (e.key === 'Enter') {
-                                console.log("wtf")
+                                console.log("wtf");
                                 e.preventDefault(); // 기본 제출 동작 방지
                                 handleSend();
                             }
