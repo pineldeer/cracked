@@ -4,7 +4,7 @@ import os
 
 from fastapi.responses import FileResponse
 from database import create_connection
-
+from pydantic import BaseModel
 from app.config import UPLOAD_FOLDER
 
 router = APIRouter()
@@ -17,7 +17,10 @@ def save_image(image: UploadFile, user_id: str):
         f.write(image.file.read())
     return image_path
 
-@router.post("/register/{user_id}")
+class RegisterUserResponse(BaseModel):
+    message: str
+
+@router.post("/register/{user_id}", response_model=RegisterUserResponse)
 def register_user(user_id: str, name: str, image: UploadFile = File(...)):
     # 유저 등록
     # DB에 user_id 가지고 DB user 테이블에 유저 등록
@@ -37,7 +40,13 @@ def register_user(user_id: str, name: str, image: UploadFile = File(...)):
     return {"message": "User registered successfully"}
 
 # get user info
-@router.get("/user_info/{user_id}")
+class GetUserInfoResponse(BaseModel):
+    user_id: str
+    username: str
+    image_path: str
+    created_at: str
+
+@router.get("/user_info/{user_id}", response_model=GetUserInfoResponse)
 def get_user_info(user_id: str):
     # DB에 user_id 가지고 DB user 테이블에 유저 정보 조회
     conn = create_connection()
@@ -51,6 +60,7 @@ def get_user_info(user_id: str):
         "image_path": user[2],
         "created_at": user[3]
     }
+
 
 # 이미지 다운로드
 @router.get("/image/{user_id}")
