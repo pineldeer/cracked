@@ -8,7 +8,7 @@ class User(Base):
     __tablename__ = 'users'
 
     id = Column(String, primary_key=True)
-    username = Column(String, nullable=False, unique=True)
+    username = Column(String, nullable=False)
     gender = Column(String)
     age = Column(Integer)
     image_path = Column(String)
