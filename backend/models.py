@@ -1,23 +1,31 @@
-from database import create_connection
-from sqlite3 import Error
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.sql import func
 
-class User:
-    def __init__(self, id, username, image_path):
-        self.id = id
-        self.username = username
-        self.image_path = image_path
+Base = declarative_base()
 
-class Grave:
-    def __init__(self, id, user_id, content):
-        self.id = id
-        self.user_id = user_id
-        self.content = content
+class User(Base):
+    __tablename__ = 'users'
 
-class Chat:
-    def __init__(self, id, user_id, question, answer, order_idx):
-        self.id = id
-        self.user_id = user_id
-        self.question = question
-        self.answer = answer
-        self.order_idx = order_idx
+    id = Column(String, primary_key=True)
+    username = Column(String, nullable=False, unique=True)
+    image_path = Column(String)
+    created_at = Column(DateTime, server_default=func.now())
 
+class Grave(Base):
+    __tablename__ = 'grave'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(String, ForeignKey('users.id'))
+    content = Column(String)
+    created_at = Column(DateTime, server_default=func.now())
+
+class Chat(Base):
+    __tablename__ = 'chat'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(String, ForeignKey('users.id'))
+    question = Column(String)
+    answer = Column(String)
+    order_idx = Column(Integer)
+    created_at = Column(DateTime, server_default=func.now())
