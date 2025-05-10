@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import func
 
@@ -21,6 +21,20 @@ class Grave(Base):
     user_id = Column(String, ForeignKey('users.id'))
     content = Column(String)
     created_at = Column(DateTime, server_default=func.now())
+
+
+class Session(Base):
+    __tablename__ = 'session'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(String, ForeignKey('users.id'))
+    color = Column(String)
+    x = Column(Float)
+    y = Column(Float)
+    size = Column(Float)
+
+    created_at = Column(DateTime, server_default=func.now())
+
 
 class Chat(Base):
     __tablename__ = 'chat'
