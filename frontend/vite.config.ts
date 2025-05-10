@@ -10,5 +10,10 @@ export default defineConfig({
       { find: "@", replacement: "/src" },
     ],
   },
-
+  server: {
+    allowedHosts: [
+      'localhost',
+      'cracked-tombstone.org',
+    ],
+  },
 })
