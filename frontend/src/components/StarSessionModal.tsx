@@ -80,13 +80,27 @@ export default function StarSessionModal({ userId, sessionId, onClose }: StarSes
 }
 
 const ModalOverlay = styled.div`
-    position: fixed; left: 0; top: 0; width: 100vw; height: 100vh;
-    background: rgba(0,0,0,0.7); z-index: 2000;
-    display: flex; align-items: center; justify-content: center;
+    position: fixed;
+    left: 0; top: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.7);
+    z-index: 2000;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 5vh;
 `;
 const ModalSheet = styled.div`
-    background: #222b; border-radius: 16px; padding: 2rem; min-width: 350px; max-width: 90vw;
-    min-height: 300px; max-height: 80vh; display: flex; flex-direction: column;
+    background: #222b;
+    border-radius: 16px;
+    padding: 2rem;
+    min-width: 350px;
+    max-width: 90vw;
+    min-height: 300px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    margin-top: 2vh;
 `;
 const ChatBox = styled.div`
     flex: 1; overflow-y: auto; margin-bottom: 1rem;

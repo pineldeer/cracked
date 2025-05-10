@@ -113,7 +113,9 @@ export default function Main() {
                 <ScrollDownIcon>↓</ScrollDownIcon>
             </Section>
             <Section>
-                {userId && <StarVerse userId={userId} />}
+                <StarVerseWrapper>
+                    {userId && <StarVerse userId={userId} />}
+                </StarVerseWrapper>
                 <Overlay>
                     <Spacer />
                     <GraveIconWrapper>
@@ -156,14 +158,14 @@ const Container = styled.div`
 `
 
 const Section = styled.section`
-    scroll-snap-align: start;
-    height: 100vh;
+    position: relative;
     width: 100vw;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    position: relative;
+    justify-content: flex-start;
+    background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
 `
 
 const ScrollDownIcon = styled.div`
@@ -180,19 +182,21 @@ const ScrollDownIcon = styled.div`
         50% { transform: translate(-50%, 10px); }
     }
 `
-
 const Overlay = styled.div`
-  position: absolute;
-  top: 0; left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  pointer-events: auto;
+    position: absolute;
+    top: 60vh; // ⭐️ 별 배경 아래부터 시작
+    left: 0;
+    width: 100vw;
+    height: 40vh; // 남은 영역
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    pointer-events: auto;
+    background: transparent; // 필요시 배경색 추가
 `;
+
 // Portrait, MessageSection, GraveIcon, StarBox 등은 pointer-events: auto; 추가
 const Portrait = styled.img`
   margin-top: 5rem;
@@ -344,9 +348,17 @@ const Sky = styled.div`
     position: relative;
     width: 100vw;
     height: 100vh;
-    background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+    /* background: transparent; // 배경 제거 */
     overflow: hidden;
     cursor: crosshair;
     z-index: 0;
     pointer-events: auto;
+`;
+
+const StarVerseWrapper = styled.div`
+    position: relative;
+    width: 100vw;
+    height: 60vh; // ⭐️ 별 배경이 차지할 영역 (예: 상단 60%)
+    overflow: hidden;
+    z-index: 0;
 `;

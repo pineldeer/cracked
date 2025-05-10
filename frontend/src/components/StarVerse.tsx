@@ -71,30 +71,40 @@ export default function StarVerse({ userId }) {
     };
 
     return (
-        <Sky onClick={handleSkyClick}>
-            {stars.map(star => (
-                <Star
-                    key={star.id}
-                    x={star.x}
-                    y={star.y}
-                    color={star.color}
-                    size={star.size}
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        handleStarClick(star);
-                    }}
-                />
-            ))}
-            {modalOpen && selectedStar && (
-                <StarSessionModal
-                    userId={userId}
-                    sessionId={selectedStar.id}
-                    onClose={handleCloseModal}
-                />
-            )}
-        </Sky>
+        <StarVerseWrapper>
+            <Sky onClick={handleSkyClick}>
+                {stars.map(star => (
+                    <Star
+                        key={star.id}
+                        x={star.x}
+                        y={star.y}
+                        color={star.color}
+                        size={star.size}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleStarClick(star);
+                        }}
+                    />
+                ))}
+                {modalOpen && selectedStar && (
+                    <StarSessionModal
+                        userId={userId}
+                        sessionId={selectedStar.id}
+                        onClose={handleCloseModal}
+                    />
+                )}
+            </Sky>
+        </StarVerseWrapper>
     );
 }
+
+const StarVerseWrapper = styled.div`
+    position: relative;
+    width: 100vw;
+    height: 50vh; // 별 배경이 차지할 영역 (예: 상단 50%)
+    overflow: hidden;
+    z-index: 0;
+`;
 
 const Sky = styled.div`
     position: relative;

@@ -122,14 +122,16 @@ const Container = styled.div`
     margin: 1rem 0;
 `
 const Header = styled.h2`
+    font-family: 'Noto Sans KR', sans-serif;
     font-size: 1.5rem;
     color: white;
 `
 
 const SessionContainer = styled.div`
+    font-family: 'Noto Sans KR', sans-serif;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     margin: 1rem 0;
     padding: 1rem;
@@ -138,6 +140,8 @@ const SessionContainer = styled.div`
     max-width: 600px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     animation: fadeIn 0.3s ease-in-out;
+    max-height: 30vh;
+    overflow-y: auto;
 `
 
 const SessionBox = styled.div`
@@ -157,5 +161,41 @@ const SessionBox = styled.div`
 const CreateButtion = styled.button`
     padding: 0.75rem 1.5rem;
 `
+
+const Overlay = styled.div`
+  position: absolute;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  pointer-events: none;
+`;
+
+const GraveIcon = styled.div`
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
+`
+
+const ArrowButton = styled.div`
+    pointer-events: auto;
+`
+
+const Sky = styled.div`
+    position: relative;
+    width: 100vw;
+    height: 100%; // Wrapper의 height에 맞추기
+    background: transparent;
+    overflow: hidden;
+    cursor: crosshair;
+    z-index: 0;
+    pointer-events: auto;
+`;
 
 // const StarIcon = styled.div``

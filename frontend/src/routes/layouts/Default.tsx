@@ -22,12 +22,14 @@ export default function AppLayout({ children }: Props) {
 }
 
 const Layout = styled.div`
+    background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    background-color: ${({ theme }) => theme.colors.background};
+    // background-color: ${({ theme }) => theme.colors.background};
     color: ${({ theme }) => theme.colors.text};
 
     padding: 0%;
