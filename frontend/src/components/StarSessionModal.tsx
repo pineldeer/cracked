@@ -66,6 +66,7 @@ export default function StarSessionModal({ userId, sessionId, onClose }: StarSes
                         onChange={handleInputChange}
                         onKeyDown={e => {
                             if (e.key === 'Enter') {
+                                console.log("wtf")
                                 e.preventDefault(); // 기본 제출 동작 방지
                                 handleSend();
                             }
