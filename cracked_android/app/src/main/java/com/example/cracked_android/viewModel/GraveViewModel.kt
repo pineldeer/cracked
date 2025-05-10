@@ -22,45 +22,12 @@ class GraveViewModel @Inject constructor(
 ) : ViewModel(){
 
 
-    private val _newAnswer = MutableStateFlow("")
-    val newAnswer: StateFlow<String> = _newAnswer.asStateFlow()
-
-    fun setNewAnswer(value: String){
-        _newAnswer.value = value
-    }
-
-    private val _questions:MutableStateFlow<List<Pair<String,String>>> = MutableStateFlow(emptyList())
-    val questions: StateFlow<List<Pair<String,String>>> = _questions.asStateFlow()
-
-    fun setQuestions(value: List<Pair<String,String>>){
-        _questions.value = value
-    }
-
-    fun addQuestion(value:Pair<String,String>){
-        val nl=_questions.value.toMutableList()
-        nl.add(value)
-        setQuestions(nl)
-    }
-
-    private val _userInfo:MutableStateFlow<UserInfo> = MutableStateFlow(UserInfo("","","",0,"",""))
-    val userInfo: StateFlow<UserInfo> = _userInfo.asStateFlow()
-
-    fun setUserInfo(value: UserInfo){
-        _userInfo.value = value
-    }
 
     fun getUserId():String?{
         return prefRepository.getPref("userId")
     }
 
-    suspend fun fetchUserInfo(){
-        val userId =getUserId()!!
-        val response = api.getUserInfo(userId)
-        if(response.isSuccessful){
-            setUserInfo(response.body()!!)
-        }
 
-    }
     /*
     suspend fun fetchQuestions(){
         val userId =getUserId()!!
@@ -94,7 +61,7 @@ class GraveViewModel @Inject constructor(
 
     suspend fun createSession(x:Int, y:Int):Response<Session>{
         val userId = getUserId()!!
-        return api.createSession(userId,"FFFF00",x,y,2)
+        return api.createSession(userId,"FFFF00",x,y,10)
 
     }
 

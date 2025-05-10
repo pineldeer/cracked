@@ -23,6 +23,7 @@ import androidx.navigation.navArgument
 import com.example.cracked_android.pages.GravePage
 import com.example.cracked_android.pages.InfoPage
 import com.example.cracked_android.pages.PortraitPage
+import com.example.cracked_android.pages.SessionPage
 import com.example.cracked_android.pages.StartPage
 import com.example.cracked_android.ui.theme.Cracked_androidTheme
 import com.example.cracked_android.viewModel.MainViewModel
@@ -81,7 +82,15 @@ private fun MyApp(
                 }
             }
             composable("GravePage"){
-                GravePage()
+                GravePage(onSessionClick = {
+                    navController.navigate("SessionPage/$it")
+                }, onGraveClick = {})
+            }
+            composable ("SessionPage/{sessionId}"){
+                val sessionId = it.arguments!!.getString("sessionId")!!
+                SessionPage(sessionId){
+                    navController.popBackStack()
+                }
             }
 
 

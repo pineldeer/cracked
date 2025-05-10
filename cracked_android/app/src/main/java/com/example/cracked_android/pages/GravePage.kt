@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -38,6 +40,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.cracked_android.R
@@ -48,11 +51,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.math.hypot
 
 @Composable
 fun GravePage(
-    viewModel:GraveViewModel = hiltViewModel<GraveViewModel>()
+    viewModel:GraveViewModel = hiltViewModel<GraveViewModel>(),
+    onSessionClick:(Int)->Unit,
+    onGraveClick:()->Unit,
 ) {
     var visibleSessionCount by remember { mutableStateOf(0) }
 
@@ -74,15 +80,25 @@ fun GravePage(
                     // 터치된 좌표: offset.x, offset.y
                     CoroutineScope(Dispatchers.IO).launch {
                         val response = viewModel.createSession(offset.x.toInt(),offset.y.toInt())
-                        if(response.isSuccessful){
-                            viewModel.addSession(response.body()!!)
+                        withContext(Dispatchers.Main){
+                            if(response.isSuccessful){
+                                viewModel.addSession(response.body()!!)
+                                onSessionClick(response.body()!!.id)
+                            }
                         }
                     }
                 }
             }
     ) {
         // 별 그리기
-        StarsLayer(visibleSessionCount,sessions = allSessions)
+        allSessions.forEachIndexed{ index, session ->
+            if (index < visibleSessionCount){
+                StarItem(
+                    session = session,
+                    onClick = { onSessionClick(session.id) }
+                )
+            }
+        }
 
         // GraveImage는 항상 중앙
         Box(modifier = Modifier.align(Alignment.Center)) {
@@ -95,31 +111,19 @@ fun GravePage(
 
 
 @Composable
-fun StarsLayer(visibleSessionCount:Int, sessions: List<Session>) {
-    Canvas(modifier = Modifier.fillMaxSize()) {
-        val centerX = size.width / 2f
-        val centerY = size.height / 2f
-
-        sessions.forEachIndexed { index, session ->
-
-            val dx = session.x.toFloat()
-            val dy = session.y.toFloat()
-
-            val distance = hypot(dx - centerX, dy - centerY)
-            val maxDistance = size.width + size.height
-
-            val alpha = ((1f - (distance / maxDistance)) * 0.7f).coerceIn(0.1f, 1f)
-
-            if(index < visibleSessionCount){
-                drawCircle(
-                    color = Color(android.graphics.Color.parseColor(session.color)).copy(alpha = alpha),
-                    radius = session.size.toFloat(),
-                    center = Offset(x = dx, y = dy)
-                )
-            }
-
-        }
-    }
+fun StarItem(session: Session, onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .offset { IntOffset(session.x, session.y) }
+            .size(session.size.dp)
+            .clip(CircleShape)
+            .background(
+                Color(android.graphics.Color.parseColor(
+                    if (session.color.startsWith("#")) session.color else "#${session.color}"
+                )).copy(alpha = 0.7f)
+            )
+            .clickable { onClick() }
+    )
 }
 
 

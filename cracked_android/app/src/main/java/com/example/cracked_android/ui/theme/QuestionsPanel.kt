@@ -26,10 +26,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.cracked_android.network.dto.ChatContent
 
 @Composable
 fun QuestionsPanel(
-    questions: List<Pair<String, String>>,
+    questions: List<ChatContent>,
     isCreating: Boolean,
     newAnswer: String,
     onAnswerChange: (String) -> Unit,
@@ -55,8 +56,8 @@ fun QuestionsPanel(
                 .padding(horizontal = 16.dp),
             contentPadding = PaddingValues(vertical = 8.dp)
         ) {
-            items(questions) { (q, a) ->
-                QuestionItem(q, a)
+            items(questions) {
+                QuestionItem(it.question, it.answer)
             }
 
             if (isCreating) {
