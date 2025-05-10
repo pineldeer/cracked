@@ -5,9 +5,11 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -29,104 +32,95 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.cracked_android.R
+import com.example.cracked_android.network.dto.Session
 import com.example.cracked_android.ui.theme.QuestionsPanel
 import com.example.cracked_android.viewModel.GraveViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.math.hypot
 
 @Composable
-fun GravePage() {
-    val viewModel = hiltViewModel<GraveViewModel>()
-    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+fun GravePage(
+    viewModel:GraveViewModel = hiltViewModel<GraveViewModel>()
+) {
+    var visibleSessionCount by remember { mutableStateOf(0) }
 
+    val allSessions by viewModel.allSessions.collectAsState()
 
-
-    var showQuestions by remember { mutableStateOf(false) }
-    var isCreating by remember { mutableStateOf(false) }
-    //var newAnswer by remember { mutableStateOf("") }
-    //val questions = remember { mutableStateListOf<Pair<String, String>>() }
-    val newAnswer by viewModel.newAnswer.collectAsState()
-    val questions by viewModel.questions.collectAsState()
-
-    val graveOffsetY by animateDpAsState(
-        targetValue = if (showQuestions) -screenHeight / 4 else 0.dp,
-        animationSpec = tween(durationMillis = 300),
-        label = "graveOffset"
-    )
-
-    val animatedOffsetY by animateDpAsState(
-        targetValue = graveOffsetY,
-        animationSpec = tween(300),
-        label = "graveOffset"
-    )
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        // 무덤 이미지 (중앙, 애니메이션 offset 적용)
-        Box(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .offset(y = animatedOffsetY)
-        ) {
-            GraveImage(onClick = { /* 묘지 클릭 시 처리 */ })
+    LaunchedEffect(allSessions) {
+        viewModel.fetchAllSession()
+        while(visibleSessionCount<allSessions.size){
+            visibleSessionCount++
+            delay(150) // 별 하나마다 150ms 딜레이
         }
+    }
 
-        // 질문 얻기 버튼
-        if (!showQuestions) {
-            Button(
-                onClick = { showQuestions = true },
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(24.dp)
-            ) {
-                Text("질문 얻기")
-            }
-        }
-
-        // 질문 창 패널
-        AnimatedVisibility(
-            visible = showQuestions,
-            enter = slideInVertically(initialOffsetY = { it }),
-            exit = slideOutVertically(targetOffsetY = { it }),
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .height(screenHeight / 2)
-                .background(Color(0xFFF5F5F5))
-        ) {
-            QuestionsPanel(
-                questions = questions,
-                isCreating = isCreating,
-                newAnswer = newAnswer,
-                onAnswerChange = { viewModel.setNewAnswer(it) },
-                onStartCreating = { isCreating = true },
-                onCancelCreating = {
-                    viewModel.setNewAnswer("")
-                    isCreating = false
-                },
-                onSubmitAnswer = {
-                    if (newAnswer.isNotBlank()) {
-                        viewModel.addQuestion("질문입니다" to newAnswer)
-                        viewModel.setNewAnswer("")
-                        isCreating = false
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures { offset ->
+                    // 터치된 좌표: offset.x, offset.y
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val response = viewModel.createSession(offset.x.toInt(),offset.y.toInt())
+                        if(response.isSuccessful){
+                            viewModel.addSession(response.body()!!)
+                        }
                     }
-                },
-                onClose = {
-                    showQuestions = false
-                    isCreating = false
-                    viewModel.setNewAnswer("")
                 }
-            )
+            }
+    ) {
+        // 별 그리기
+        StarsLayer(visibleSessionCount,sessions = allSessions)
+
+        // GraveImage는 항상 중앙
+        Box(modifier = Modifier.align(Alignment.Center)) {
+            GraveImage{}
         }
     }
 }
 
 
 
+
+@Composable
+fun StarsLayer(visibleSessionCount:Int, sessions: List<Session>) {
+    Canvas(modifier = Modifier.fillMaxSize()) {
+        val centerX = size.width / 2f
+        val centerY = size.height / 2f
+
+        sessions.forEachIndexed { index, session ->
+
+            val dx = session.x.toFloat()
+            val dy = session.y.toFloat()
+
+            val distance = hypot(dx - centerX, dy - centerY)
+            val maxDistance = size.width + size.height
+
+            val alpha = ((1f - (distance / maxDistance)) * 0.7f).coerceIn(0.1f, 1f)
+
+            if(index < visibleSessionCount){
+                drawCircle(
+                    color = Color(android.graphics.Color.parseColor(session.color)).copy(alpha = alpha),
+                    radius = session.size.toFloat(),
+                    center = Offset(x = dx, y = dy)
+                )
+            }
+
+        }
+    }
+}
 
 
 

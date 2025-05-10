@@ -5,10 +5,13 @@ import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import com.example.cracked_android.data.PrefRepository
 import com.example.cracked_android.network.MyRestAPI
+import com.example.cracked_android.network.dto.Session
+import com.example.cracked_android.network.dto.UserInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import retrofit2.Response
 import javax.inject.Inject
 
 
@@ -38,4 +41,61 @@ class GraveViewModel @Inject constructor(
         nl.add(value)
         setQuestions(nl)
     }
+
+    private val _userInfo:MutableStateFlow<UserInfo> = MutableStateFlow(UserInfo("","","",0,"",""))
+    val userInfo: StateFlow<UserInfo> = _userInfo.asStateFlow()
+
+    fun setUserInfo(value: UserInfo){
+        _userInfo.value = value
+    }
+
+    fun getUserId():String?{
+        return prefRepository.getPref("userId")
+    }
+
+    suspend fun fetchUserInfo(){
+        val userId =getUserId()!!
+        val response = api.getUserInfo(userId)
+        if(response.isSuccessful){
+            setUserInfo(response.body()!!)
+        }
+
+    }
+    /*
+    suspend fun fetchQuestions(){
+        val userId =getUserId()!!
+        val response = api.getAllChat(userId)
+        if(response.isSuccessful){
+            setQuestions(response.body()!!)
+        }
+
+    }*/
+
+    private val _allSessions:MutableStateFlow<List<Session>> = MutableStateFlow(emptyList())
+    val allSessions: StateFlow<List<Session>> = _allSessions.asStateFlow()
+
+    fun setAllSessions(value: List<Session>){
+        _allSessions.value = value
+    }
+
+    fun addSession(value:Session){
+        val nl = allSessions.value.toMutableList()
+        nl.add(value)
+        setAllSessions(nl)
+    }
+
+    suspend fun fetchAllSession(){
+        val userId=getUserId()!!
+        val response = api.getAllSession(userId)
+        if(response.isSuccessful){
+            setAllSessions(response.body()!!)
+        }
+    }
+
+    suspend fun createSession(x:Int, y:Int):Response<Session>{
+        val userId = getUserId()!!
+        return api.createSession(userId,"FFFF00",x,y,2)
+
+    }
+
 }

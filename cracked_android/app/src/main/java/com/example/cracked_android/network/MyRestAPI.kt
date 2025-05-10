@@ -2,6 +2,7 @@ package com.example.cracked_android.network
 
 import com.example.cracked_android.network.dto.ChatContent
 import com.example.cracked_android.network.dto.RegisterResponse
+import com.example.cracked_android.network.dto.Session
 import com.example.cracked_android.network.dto.UserInfo
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -43,20 +44,37 @@ interface MyRestAPI {
         @Path("user_id") userId:String,
     ):String
 
+
+    @GET("/api/chat/get_all_session/{user_id}")
+    suspend fun getAllSession(
+        @Path("user_id") userId:String,
+    ): Response<List<Session>>
+
     @GET("/api/chat/get_all_chat/{user_id}")
     suspend fun getAllChat(
         @Path("user_id") userId:String,
-    ): ChatContent
+        @Query("session_id") sessionId:String,
+    ): Response<List<ChatContent>>
+
+    @POST("/api/chat/create_session/{user_id}")
+    suspend fun createSession(
+        @Path("user_id") userId:String,
+        @Query("color") color:String,
+        @Query("x") x:Int,
+        @Query("y") y:Int,
+        @Query("size") size:Int,
+    ): Response<Session>
 
     @POST("/api/chat/create_question/{user_id}")
     suspend fun createQuestion(
         @Path("user_id") userId:String,
-    ): ChatContent
+        @Query("session_id") sessionId:String,
+    ): Response<ChatContent>
 
     @POST("/api/chat/answer_question/{user_id}")
     suspend fun answerQuestion(
         @Path("user_id") userId:String,
-        @Query("order_idx") orderIdx:Int,
+        @Query("session_id") sessionId:String,
         @Query("answer") answer:String,
     )
 
