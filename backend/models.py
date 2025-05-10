@@ -27,6 +27,7 @@ class Chat(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(String, ForeignKey('users.id'))
+    session_id = Column(Integer)
     question = Column(String)
     answer = Column(String)
     order_idx = Column(Integer)
