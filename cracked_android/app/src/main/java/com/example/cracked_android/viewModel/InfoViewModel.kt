@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -54,13 +55,19 @@ class InfoViewModel @Inject constructor(
         _age.value = value
     }
 
+
     suspend fun registerUser(
         name: String,
         gender: String,
         age: Int,
         imageFile: File
     ):String{
-        return api.registerUser( name, gender, age, fileToMultipartPart(imageFile) )
+
+        return api.registerUser(
+           name.toRequestBody("text/plain".toMediaTypeOrNull()),
+            gender.toRequestBody("text/plain".toMediaTypeOrNull()),
+            age.toString().toRequestBody("text/plain".toMediaTypeOrNull()),
+            fileToMultipartPart(imageFile) )
     }
 
     fun setUserId(userId: String) {

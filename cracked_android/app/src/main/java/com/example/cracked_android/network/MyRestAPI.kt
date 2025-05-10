@@ -3,6 +3,7 @@ package com.example.cracked_android.network
 import com.example.cracked_android.network.dto.ChatContent
 import com.example.cracked_android.network.dto.UserInfo
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
@@ -13,13 +14,13 @@ import retrofit2.http.Query
 
 interface MyRestAPI {
     @Multipart
-    @POST("/api/users/register")
+    @POST("/api/users/android/register")
     suspend fun registerUser(
-        @Query("name") name: String,
-        @Query("gender") gender: String,
-        @Query("age") age: Int,
+        @Part("name") name: RequestBody,
+        @Part("gender") gender: RequestBody,
+        @Part("age") age: RequestBody,
         @Part image: MultipartBody.Part
-    ):String
+    ): String
 
     @GET("/api/users/user_info/{user_id}")
     suspend fun getUserInfo(
