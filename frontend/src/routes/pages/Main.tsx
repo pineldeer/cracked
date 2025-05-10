@@ -3,10 +3,11 @@ import styled, { keyframes, createGlobalStyle } from 'styled-components'
 import useUser from '../../hooks/useUser'
 import { useEffect, useState } from 'react'
 import { getGraveContent, getPortraitImage, getUserInfo, submitGraveContent } from '../../api/api'
-import { getUserIdImediately } from '../../contexts/UserIdContext'
+import { getUserIdImediately, useUserId } from '../../contexts/UserIdContext'
 import { useNavigate } from 'react-router-dom'
 // import { userInfo } from '../../\btypes/type'
 import StarBox from '../../components/StarBox'
+import StarVerse from '../../components/StarVerse'
 import graveIcon from '../../assets/grave-icon.png'
 import graveBack from '../../assets/grave-back.png'
 
@@ -21,6 +22,7 @@ const YiSunShinFont = createGlobalStyle`
 
 export default function Main() {
     const { user, setUser } = useUser()
+    const userId = useUserId()
 
     const navigate = useNavigate()
     
@@ -88,66 +90,110 @@ export default function Main() {
         upload()
     }, [isModalOpen])
 
-    
+    useEffect(() => {
+        if (!userId) return; // userId가 없으면 아무것도 하지 않음
+        async function loadStars() {
+            const starList = await getAllSessions(userId);
+            setStars(starList);
+        }
+        loadStars();
+    }, [userId]);
+
     return (
         <Container>
             <YiSunShinFont />
-            <>
+            <Section>
                 <Portrait src={user.portraitUrl ?? undefined} alt="영정사진" />
                 <MessageSection>
                     <MainMessage>{user.name}은 {now}에 죽었습니다.</MainMessage>
                     <SubMessage>묘비문을 작성해 보세요. 아래 묘비를 클릭하세요 ↓</SubMessage>
                 </MessageSection>
+                <ScrollDownIcon>↓</ScrollDownIcon>
+            </Section>
+            <Section>
+                {userId && <StarVerse userId={userId} />}
+                <Overlay>
+                    <Spacer />
+                    <GraveIcon onClick={() => setIsModalOpen(true)}>
+                        <img src={graveIcon} alt="묘비 아이콘" style={{ width: 300, height: 300 }} />
+                    </GraveIcon>
+                    {isModalOpen && (
+                        <ModalOverlay onClick={() => setIsModalOpen(false)}>
+                            <ModalSheet onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
+                                <GraveBackImg src={graveBack} alt="묘비 배경" />
+                                <EpitaphInput
+                                    value={epitaph}
+                                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setEpitaph(e.target.value)}
+                                    placeholder="나의 묘비문을 여기에 작성하세요..."
+                                />
+                            </ModalSheet>
+                        </ModalOverlay>
+                    )}
+                </Overlay>
+                {/* <StarBox /> */}
                 <Spacer />
-                <GraveIcon onClick={() => setIsModalOpen(true)}>
-                    <img src={graveIcon} alt="묘비 아이콘" style={{ width: 300, height: 300 }} />
-                </GraveIcon>
-
-                {isModalOpen && (
-                    <ModalOverlay onClick={() => setIsModalOpen(false)}>
-                        <ModalSheet onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
-                            <GraveBackImg src={graveBack} alt="묘비 배경" />
-                            <EpitaphInput
-                                value={epitaph}
-                                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setEpitaph(e.target.value)}
-                                placeholder="나의 묘비문을 여기에 작성하세요..."
-                            />
-                        </ModalSheet>
-                    </ModalOverlay>
-                )}
-
-
-                {/* <Spacer /> */}
-                <StarBox />
-                <Spacer />
-                
-            </>
+            </Section>
         </Container>
     )
 }
 
 // styled-components (추가 + 기존 그대로 유지)
 const Container = styled.div`
+    scroll-snap-type: y mandatory;
+    overflow-y: scroll;
+    height: 100vh;
+`
+
+const Section = styled.section`
+    scroll-snap-align: start;
+    height: 100vh;
+    width: 100vw;
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 200vh;
-    /* background-color: #f0f0f0; */
+    justify-content: center;
+    position: relative;
 `
 
-// const Loading = styled.div`
-//     margin-top: 40vh;
-//     font-size: 1.5rem;
-// `
+const ScrollDownIcon = styled.div`
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2rem;
+    color: #fff;
+    opacity: 0.7;
+    animation: bounce 1.5s infinite;
+    @keyframes bounce {
+        0%, 100% { transform: translate(-50%, 0); }
+        50% { transform: translate(-50%, 10px); }
+    }
+`
 
+const Overlay = styled.div`
+  position: absolute;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; // 필요에 따라 center로 변경
+  pointer-events: none; // StarVerse와 겹치는 부분 클릭 가능하게 하려면
+  /* pointer-events: auto; // 오버레이 요소 클릭 가능하게 하려면 */
+`;
+// Portrait, MessageSection, GraveIcon, StarBox 등은 pointer-events: auto; 추가
 const Portrait = styled.img`
-    width: 170px;
-    height: 170px;
-    object-fit: cover;
-    border: 8px solid #000;
-    border-radius: 10px;
-    margin-top: 5rem;
-`
+  margin-top: 5rem;
+  width: 170px;
+  height: 170px;
+  object-fit: cover;
+  border: 8px solid #000;
+  border-radius: 10px;
+  z-index: 2;
+  pointer-events: auto;
+`;
 
 const MessageSection = styled.div`
     margin-top: 2rem;
