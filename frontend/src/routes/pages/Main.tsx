@@ -6,6 +6,8 @@ import { getGraveContent, getPortraitImage, getUserInfo, submitGraveContent } fr
 import { getUserIdImediately } from '../../contexts/UserIdContext'
 import { useNavigate } from 'react-router-dom'
 // import { userInfo } from '../../\btypes/type'
+import StarBox from '../../components/StarBox'
+
 
 export default function Main() {
     const { user, setUser } = useUser()
@@ -101,7 +103,13 @@ export default function Main() {
                             />
                         </ModalSheet>
                     </ModalOverlay>
-                )}                
+                )}
+
+
+                {/* <Spacer /> */}
+                <StarBox />
+                <Spacer />
+                
             </>
         </Container>
     )
