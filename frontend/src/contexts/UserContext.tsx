@@ -1,11 +1,12 @@
+// contexts/UserContext.tsx
 import React, { createContext, useContext, useState } from 'react'
 
-interface UserInfo {
+export interface UserInfo {
     name: string
     photoUrl?: string
     gender?: string
     age?: number
-    portraitUrl?: string   // 서버로부터 받은 영정사진 URL
+    portraitUrl?: string
 }
 
 interface UserContextType {
@@ -17,11 +18,12 @@ const UserContext = createContext<UserContextType | undefined>(undefined)
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [user, setUser] = useState<UserInfo>({
-        name: '',
-        photoUrl: '',
-        gender: '',
-        age: undefined,
-        portraitUrl: '',
+        // ✅ 개발용 fake data
+        name: '홍길동',
+        photoUrl: 'https://via.placeholder.com/150',
+        gender: '남성',
+        age: 30,
+        portraitUrl: '',    // 메인 페이지에서 fake portrait 할 예정
     })
 
     return (

@@ -4,6 +4,8 @@ import Home from './pages/Home'
 import Info from './pages/Info'
 import Main from './pages/Main'
 
+import { UserProvider } from '../contexts/UserContext'
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -20,5 +22,10 @@ const router = createBrowserRouter([
 ])
 
 export default function Router() {
-  return <RouterProvider router={router} />
+
+  return (
+  <UserProvider>
+    <RouterProvider router={router} />
+  </UserProvider>
+  )
 }
