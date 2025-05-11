@@ -31,6 +31,7 @@ import com.example.cracked_android.network.dto.ChatContent
 @Composable
 fun QuestionsPanel(
     questions: List<ChatContent>,
+    newQuestion: String,
     isCreating: Boolean,
     newAnswer: String,
     onAnswerChange: (String) -> Unit,
@@ -63,6 +64,7 @@ fun QuestionsPanel(
             if (isCreating) {
                 item {
                     NewQuestionInput(
+                        newQuestion = newQuestion,
                         answer = newAnswer,
                         onAnswerChange = onAnswerChange,
                         onCancel = onCancelCreating,
@@ -96,12 +98,14 @@ fun QuestionItem(question: String, answer: String) {
 
 @Composable
 fun NewQuestionInput(
+    newQuestion:String,
     answer: String,
     onAnswerChange: (String) -> Unit,
     onCancel: () -> Unit,
     onSubmit: () -> Unit
 ) {
     Column(modifier = Modifier.padding(vertical = 8.dp)) {
+        Text(newQuestion, fontWeight = FontWeight.Bold)
         OutlinedTextField(
             value = answer,
             onValueChange = onAnswerChange,

@@ -42,7 +42,7 @@ interface MyRestAPI {
     @GET("/api/grave/get_grave_content/{user_id}")
     suspend fun getGraveContent(
         @Path("user_id") userId:String,
-    ):String
+    ):Response<String>
 
 
     @GET("/api/chat/get_all_session/{user_id}")

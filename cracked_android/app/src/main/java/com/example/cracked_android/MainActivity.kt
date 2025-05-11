@@ -20,6 +20,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.cracked_android.pages.GraveInsidePage
 import com.example.cracked_android.pages.GravePage
 import com.example.cracked_android.pages.InfoPage
 import com.example.cracked_android.pages.PortraitPage
@@ -84,13 +85,18 @@ private fun MyApp(
             composable("GravePage"){
                 GravePage(onSessionClick = {
                     navController.navigate("SessionPage/$it")
-                }, onGraveClick = {})
+                }, onGraveClick = {
+                    navController.navigate("GraveInsidePage")
+                })
             }
             composable ("SessionPage/{sessionId}"){
                 val sessionId = it.arguments!!.getString("sessionId")!!
                 SessionPage(sessionId){
                     navController.popBackStack()
                 }
+            }
+            composable ("GraveInsidePage"){
+                GraveInsidePage{navController.popBackStack()}
             }
 
 
