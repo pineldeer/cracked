@@ -68,7 +68,7 @@ export default function StarSessionModal({ userId, sessionId, onClose }: StarSes
                             if (e.key === 'Enter') {
                                 console.log("wtf");
                                 e.preventDefault(); // 기본 제출 동작 방지
-                                handleSend();
+                                // handleSend();
                             }
                         }}
                         placeholder="답변을 입력하세요..."
